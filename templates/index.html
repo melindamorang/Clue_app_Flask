@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h1>Enter your cards</h1>
+    <form action="{{ url_for('enterCards') }}" method="post">
+        <h2>Suspects</h2>
+        {% for suspect in suspects %}
+            <input type="checkbox" value="{{ suspect }}" name="suspects">{{ suspect }}<br>
+        {% endfor %}
+        <h2>Weapons</h2>
+        {% for weapon in weapons %}
+            <input type="checkbox" value="{{ weapon }}" name="weapons">{{ weapon }}<br>
+        {% endfor %}
+        <h2>Rooms</h2>
+        {% for room in rooms %}
+            <input type="checkbox" value="{{ room }}" name="rooms">{{ room }}<br>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

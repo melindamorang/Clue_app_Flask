@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h1>Enter your snoop</h1>
+    <form action="{{ url_for('enterSnoop') }}" method="post">
+        Choose the player to snoop:<br />
+        <select name="player">
+            {% for player in players %}
+            <option value="{{ player }}">{{ player }}</option>
+            {% endfor %}
+            </select>
+        <br />
+        Which card did you see?<br />
+        <select name="card">
+            <optgroup label="Suspects">
+                {% for suspect in suspects %}
+                <option value="{{ suspect }}">{{ suspect }}</option>
+                {% endfor %}
+            </optgroup>
+            <optgroup label="Weapons">
+                {% for weapon in weapons %}
+                <option value="{{ weapon }}">{{ weapon }}</option>
+                {% endfor %}
+            </optgroup>
+            <optgroup label="Rooms">
+                {% for room in rooms %}
+                <option value="{{ room }}">{{ room }}</option>
+                {% endfor %}
+            </optgroup>
+        </select>
+        <br />
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}
