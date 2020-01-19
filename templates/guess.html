@@ -3,7 +3,7 @@
 {% block body %}
 
 <h1>Make a guess</h1>
-<form action="{{ url_for('enterGuess') }}" method="post"></form>
+<form action="{{ url_for('enterGuess') }}" method="post">
     {% include "CardCombos.html" %}
     <input type="submit" value="Submit">
 </form>

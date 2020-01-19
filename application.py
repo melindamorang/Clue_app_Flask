@@ -129,10 +129,31 @@ def guess():
 @app.route('/enterGuess', methods=["POST"])
 def enterGuess():
     # Get my entered guess from entry form
-    guessed_suspect = request.form.get("suspect")
-    guessed_weapon = request.form.get("weapon")
-    guessed_room = request.form.get("room")
-    ### TODO: Make this go to a disproving page
+    guessed_suspect = request.form.get("guessed_suspect")
+    guessed_weapon = request.form.get("guessed_weapon")
+    guessed_room = request.form.get("guessed_room")
+    # Render page where you can enter disproval
+    return render_template(
+        "DisproveMyGuess.html",
+        guessed_suspect=guessed_suspect,
+        guessed_weapon=guessed_weapon,
+        guessed_room=guessed_room,
+        players=players
+        )
+
+@app.route('/enterDisprove', methods=["POST"])
+def enterDisprove():
+    # Get my entered guess from entry form
+    guessed_suspect = request.form.get("guessed_suspect")
+    guessed_weapon = request.form.get("guessed_weapon")
+    guessed_room = request.form.get("guessed_room")
+    disprover_suspect = request.form.get("disprover_suspect")
+    disprover_weapon = request.form.get("disprover_weapon")
+    disprover_room = request.form.get("disprover_room")
+    # Enter retrieved information
+    detective_notebook["suspects"][guessed_suspect] = disprover_suspect
+    detective_notebook["weapons"][guessed_weapon] = disprover_weapon
+    detective_notebook["rooms"][guessed_room] = disprover_room
     # Render notebook
     return renderMyNotebook()
 
