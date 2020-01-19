@@ -73,28 +73,6 @@ def index():
         rooms=rooms
         )
 
-@app.route('/snoop')
-def snoop():
-    return render_template(
-        "snoop.html",
-        players=players,
-        suspects=[suspect for suspect in suspects if detective_notebook["suspects"][suspect] != "Me"],
-        weapons=[weapon for weapon in weapons if detective_notebook["weapons"][weapon] != "Me"],
-        rooms=[room for room in rooms if detective_notebook["rooms"][room] != "Me"]
-        )
-
-@app.route('/guess')
-def guess():
-    return render_template(
-        "guess.html",
-        suspects=suspects,
-        weapons=weapons,
-        rooms=rooms,
-        suspect_dict=detective_notebook["suspects"],
-        weapon_dict=detective_notebook["weapons"],
-        room_dict=detective_notebook["rooms"]
-        )
-
 @app.route('/enterCards', methods=["POST"])
 def enterCards():
     # Get player's cards from entry form
@@ -111,6 +89,16 @@ def enterCards():
     # Render notebook
     return renderMyNotebook()
 
+@app.route('/snoop')
+def snoop():
+    return render_template(
+        "snoop.html",
+        players=players,
+        suspects=[suspect for suspect in suspects if detective_notebook["suspects"][suspect] != "Me"],
+        weapons=[weapon for weapon in weapons if detective_notebook["weapons"][weapon] != "Me"],
+        rooms=[room for room in rooms if detective_notebook["rooms"][room] != "Me"]
+        )
+
 @app.route('/enterSnoop', methods=["POST"])
 def enterSnoop():
     # Get the player that was snooped and the card seen
@@ -125,6 +113,18 @@ def enterSnoop():
         detective_notebook["rooms"][card] = player
     # Render notebook
     return renderMyNotebook()
+
+@app.route('/guess')
+def guess():
+    return render_template(
+        "guess.html",
+        suspects=suspects,
+        weapons=weapons,
+        rooms=rooms,
+        suspect_dict=detective_notebook["suspects"],
+        weapon_dict=detective_notebook["weapons"],
+        room_dict=detective_notebook["rooms"]
+        )
 
 @app.route('/enterGuess', methods=["POST"])
 def enterGuess():
