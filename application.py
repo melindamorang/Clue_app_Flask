@@ -151,9 +151,12 @@ def enterDisprove():
     disprover_weapon = request.form.get("disprover_weapon")
     disprover_room = request.form.get("disprover_room")
     # Enter retrieved information
-    detective_notebook["suspects"][guessed_suspect] = disprover_suspect
-    detective_notebook["weapons"][guessed_weapon] = disprover_weapon
-    detective_notebook["rooms"][guessed_room] = disprover_room
+    if disprover_suspect:
+        detective_notebook["suspects"][guessed_suspect] = disprover_suspect
+    if disprover_weapon:
+        detective_notebook["weapons"][guessed_weapon] = disprover_weapon
+    if disprover_room:
+        detective_notebook["rooms"][guessed_room] = disprover_room
     # Render notebook
     return renderMyNotebook()
 
