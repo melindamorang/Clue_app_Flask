@@ -56,6 +56,14 @@ detective_notebook = {
     "rooms": {room: "" for room in rooms}
 }
 
+def renderMyNotebook():
+    return render_template(
+        "myNotebook.html",
+        suspect_dict=detective_notebook["suspects"],
+        weapon_dict=detective_notebook["weapons"],
+        room_dict=detective_notebook["rooms"]
+        )
+
 @app.route('/')
 def index():
     return render_template(
@@ -75,9 +83,13 @@ def snoop():
         rooms=[room for room in rooms if detective_notebook["rooms"][room] != "Me"]
         )
 
-def renderMyNotebook():
+@app.route('/guess')
+def guess():
     return render_template(
-        "myNotebook.html",
+        "guess.html",
+        suspects=suspects,
+        weapons=weapons,
+        rooms=rooms,
         suspect_dict=detective_notebook["suspects"],
         weapon_dict=detective_notebook["weapons"],
         room_dict=detective_notebook["rooms"]
@@ -111,6 +123,16 @@ def enterSnoop():
         detective_notebook["weapons"][card] = player
     elif card in rooms:
         detective_notebook["rooms"][card] = player
+    # Render notebook
+    return renderMyNotebook()
+
+@app.route('/enterGuess', methods=["POST"])
+def enterGuess():
+    # Get my entered guess from entry form
+    guessed_suspect = request.form.get("suspect")
+    guessed_weapon = request.form.get("weapon")
+    guessed_room = request.form.get("room")
+    ### TODO: Make this go to a disproving page
     # Render notebook
     return renderMyNotebook()
 

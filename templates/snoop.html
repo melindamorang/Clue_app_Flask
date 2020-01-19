@@ -4,11 +4,7 @@
     <h1>Enter your snoop</h1>
     <form action="{{ url_for('enterSnoop') }}" method="post">
         Choose the player to snoop:<br />
-        <select name="player">
-            {% for player in players %}
-            <option value="{{ player }}">{{ player }}</option>
-            {% endfor %}
-            </select>
+        {% include "PlayerCombo.html" %}
         <br />
         Which card did you see?<br />
         <select name="card">

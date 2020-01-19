@@ -1,0 +1,9 @@
+{% block playerCombo %}
+
+<select name="player">
+    {% for player in players %}
+    <option value="{{ player }}">{{ player }}</option>
+    {% endfor %}
+    </select>
+
+{% endblock %}

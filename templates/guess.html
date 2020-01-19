@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1>Make a guess</h1>
+<form action="{{ url_for('enterGuess') }}" method="post"></form>
+    {% include "CardCombos.html" %}
+    <input type="submit" value="Submit">
+</form>
+
+{% include "DetectiveNotebook.html" %}
+    
+{% endblock %}
