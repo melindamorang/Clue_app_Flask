@@ -47,11 +47,11 @@ rooms = [
 ]
 
 class player():
-    def __init__(name, num_cards):
+    def __init__(name, num_cards, initial_not_has):
         self.name = name
         self.num_cards = num_cards
         self.has = []
-        self.does_not_have = []
+        self.does_not_have = initial_not_has
         self.at_least_one = []
 
     def add_card(card):
@@ -97,6 +97,7 @@ class player():
 
 # Players in the current game
 players = {}
+me = None
 
 # My detective notebook, indicating what I know about who has what.
 detective_notebook = {
@@ -128,13 +129,18 @@ def enterCards():
     my_suspects = request.form.getlist("suspects")
     my_weapons = request.form.getlist("weapons")
     my_rooms = request.form.getlist("rooms")
+    # Initialize myself
+    i_not_have = [suspect in suspects if suspect not in my_suspects] + \
+        [weapon in weapons if weapon not in my_weapons] + \
+            [room for room in rooms if room not in my_rooms]
+    me = player("Me", len(my_suspects + my_weapons + my_rooms]), i_not_have)
     # Get the names of the other players and how many cards they have
     for i in range(2, 11):
         player_name = request.form.get(f"Player_{i}")
         num_cards = request.form.get(f"num_cards_{i}")
         if player_name and num_cards:
             # Initialize a player object
-            players[player_name] = player(player_name, num_cards)
+            players[player_name] = player(player_name, num_cards, my_suspects + my_weapons + my_rooms)
     # Update detective notebook with player's own cards
     for suspect in my_suspects:
         detective_notebook["suspects"][suspect] = "Me"
@@ -150,9 +156,9 @@ def snoop():
     return render_template(
         "snoop.html",
         players=players.keys(),
-        suspects=[suspect for suspect in suspects if detective_notebook["suspects"][suspect] != "Me"],
-        weapons=[weapon for weapon in weapons if detective_notebook["weapons"][weapon] != "Me"],
-        rooms=[room for room in rooms if detective_notebook["rooms"][room] != "Me"]
+        suspects=[suspect for suspect in suspects if suspect not in me.has],
+        weapons=[weapon for weapon in weapons if weapon not in me.has],
+        rooms=[room for room in rooms if room not in me.has]
         )
 
 @app.route('/enterSnoop', methods=["POST"])
@@ -228,6 +234,37 @@ def enterDisprove():
     else:
         for player in non_disprover:
             players[player].enter_not_has(guessed_room)
+    # Render notebook
+    return renderMyNotebook()
+
+@app.route('/otherPlayerGuess')
+def otherPlaylerGuess():
+    return render_template(
+        "OtherPlayerGuess.html",
+        players=["Me"] + players.keys(),
+        suspects=suspects,
+        weapons=weapons,
+        rooms=rooms
+        )
+
+@app.route('/enterOtherPlayerGuess', methods=["POST"])
+def enterOtherPlayerGuess():
+    # Get other player's entered guess and disprovers from entry form
+    guessed_suspect = request.form.get("guessed_suspect")
+    guessed_weapon = request.form.get("guessed_weapon")
+    guessed_room = request.form.get("guessed_room")
+    disprovers = request.form.get("disprovers").remove("Me")
+    non_disprovers = [p for p in players.keys() if p not in disprovers]
+    # Enter retrieved information
+    guess = [guessed_suspect, guessed_weapon, guessed_room]
+    if guessed_suspect in me.has:
+        guess.remove(guessed_suspect)
+    if guessed_weapon in me.has:
+        guess.remove(guessed_weapon)
+    if guessed_room in me.has:
+        guess.remove(guessed_room)
+    ## TODO: Continue here
+    # if guess:
     # Render notebook
     return renderMyNotebook()
 
