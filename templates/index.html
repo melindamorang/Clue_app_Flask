@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <h1>Enter your cards</h1>
     <form action="{{ url_for('enterCards') }}" method="post">
+        <h1>Enter your cards</h1>
         <h2>Suspects</h2>
         {% for suspect in suspects %}
             <input type="checkbox" value="{{ suspect }}" name="suspects">{{ suspect }}<br>
@@ -15,6 +15,19 @@
         {% for room in rooms %}
             <input type="checkbox" value="{{ room }}" name="rooms">{{ room }}<br>
         {% endfor %}
+        <h1>Enter players</h1>
+        <table>
+            <tr>
+                <th>Player name</th>
+                <th>Number of cards</th>
+            </tr>
+            {% for i in range(2, 11) %}
+            <tr>
+                <td><input type="text" name="Player_{{ i }}"></td>
+                <td><input type="number" step="1" name="num_cards_{{ i }}"></td>
+            </tr>
+            {% endfor %}
+        </table>
         <input type="submit" value="Submit">
     </form>
 {% endblock %}

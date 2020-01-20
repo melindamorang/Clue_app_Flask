@@ -46,8 +46,57 @@ rooms = [
     "Fountain"
 ]
 
+class player():
+    def __init__(name, num_cards):
+        self.name = name
+        self.num_cards = num_cards
+        self.has = []
+        self.does_not_have = []
+        self.at_least_one = []
+
+    def add_card(card):
+        if card in self.has:
+            # We already knew this.
+            return
+        self.has.append(card)
+        # Clean up at_least_ones with this card in it
+        for i in range(0, len(self.at_least_one)):
+            guess = self.at_least_one[i]  # A guess will have either 2 or 3 cards in it
+            if card in guess:
+                if set(guess).issubset(set(self.has)):
+                    # All remaining cards in the at_least_one guess belong to this player.
+                    # We won't get any further info out of this guess, so delete it.
+                    del self.at_least_one[i]
+        # Since this player has this card, no one else does.
+        for plyr in [p for p in players.keys() if p != self.name]:
+            plyr.enter_not_has(card)
+
+    def enter_not_has(card):
+        """Indicate that a player does not have a certain card.
+
+        Go through logic to see if we can learn anything else from this information.
+        """ 
+        if card in self.does_not_have:
+            # We already knew this.
+            return
+        self.does_not_have.append(card)
+        # Go through prior guesses where we know they had at least one of the cards
+        # and see if we can eliminate anything.
+        for i in range(0, len(self.at_least_one)):
+            guess = self.at_least_one[i]  # A guess will have either 2 or 3 cards in it
+            if card in guess:
+                guess.remove(card)
+                if len(guess) == 1:
+                    # We learned something!
+                    # The player must have the remaining card in the guess
+                    add_card(guess[0])
+                    del self.at_least_one[i]
+                else:
+                    # We narrowed things down. Update at_least_one.
+                    self.at_least_one[i] = guess
+
 # Players in the current game
-players = ["Andy", "Susan", "Sarah", "Maud", "Sandy"]
+players = {}
 
 # My detective notebook, indicating what I know about who has what.
 detective_notebook = {
@@ -79,6 +128,13 @@ def enterCards():
     my_suspects = request.form.getlist("suspects")
     my_weapons = request.form.getlist("weapons")
     my_rooms = request.form.getlist("rooms")
+    # Get the names of the other players and how many cards they have
+    for i in range(2, 11):
+        player_name = request.form.get(f"Player_{i}")
+        num_cards = request.form.get(f"num_cards_{i}")
+        if player_name and num_cards:
+            # Initialize a player object
+            players[player_name] = player(player_name, num_cards)
     # Update detective notebook with player's own cards
     for suspect in my_suspects:
         detective_notebook["suspects"][suspect] = "Me"
@@ -93,7 +149,7 @@ def enterCards():
 def snoop():
     return render_template(
         "snoop.html",
-        players=players,
+        players=players.keys(),
         suspects=[suspect for suspect in suspects if detective_notebook["suspects"][suspect] != "Me"],
         weapons=[weapon for weapon in weapons if detective_notebook["weapons"][weapon] != "Me"],
         rooms=[room for room in rooms if detective_notebook["rooms"][room] != "Me"]
@@ -104,6 +160,8 @@ def enterSnoop():
     # Get the player that was snooped and the card seen
     player = request.form.get("player")
     card = request.form.get("card")
+    # Update player info
+    players[player].add_card(card)
     # Update detective notebook with the snoop info
     if card in suspects:
         detective_notebook["suspects"][card] = player
@@ -138,7 +196,7 @@ def enterGuess():
         guessed_suspect=guessed_suspect,
         guessed_weapon=guessed_weapon,
         guessed_room=guessed_room,
-        players=players
+        players=players.keys()
         )
 
 @app.route('/enterDisprove', methods=["POST"])
@@ -150,13 +208,26 @@ def enterDisprove():
     disprover_suspect = request.form.get("disprover_suspect")
     disprover_weapon = request.form.get("disprover_weapon")
     disprover_room = request.form.get("disprover_room")
+    non_disprover = [p for p in players.keys() if p not in [disprover_suspect, disprover_weapon, disprover_room]]
     # Enter retrieved information
     if disprover_suspect:
         detective_notebook["suspects"][guessed_suspect] = disprover_suspect
+        players[disprover_suspect].add_card(guessed_suspect)
+    else:
+        for player in non_disprover:
+            players[player].enter_not_has(guessed_suspect)
     if disprover_weapon:
         detective_notebook["weapons"][guessed_weapon] = disprover_weapon
+        players[disprover_weapon].add_card(guessed_weapon)
+    else:
+        for player in non_disprover:
+            players[player].enter_not_has(guessed_weapon)
     if disprover_room:
         detective_notebook["rooms"][guessed_room] = disprover_room
+        players[disprover_room].add_card(guessed_room)
+    else:
+        for player in non_disprover:
+            players[player].enter_not_has(guessed_room)
     # Render notebook
     return renderMyNotebook()
 
