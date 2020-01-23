@@ -318,4 +318,4 @@ def enterOtherPlayerGuess():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(threaded=True)
