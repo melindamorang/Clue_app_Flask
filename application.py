@@ -89,7 +89,7 @@ class player():
                 if len(guess) == 1:
                     # We learned something!
                     # The player must have the remaining card in the guess
-                    add_card(guess[0])
+                    self.add_card(guess[0])
                     del self.at_least_one[i]
                 else:
                     # We narrowed things down. Update at_least_one.
@@ -179,6 +179,7 @@ def enterCards():
     for room in my_rooms:
         detective_notebook["rooms"][room] = "Me"
     # Render notebook
+    print(players)
     return renderMyNotebook()
 
 @app.route('/snoop')
@@ -264,7 +265,7 @@ def enterDisprove():
 def otherPlayerGuess():
     return render_template(
         "OtherPlayerGuess.html",
-        players=["Me"] + players.keys(),
+        players=players.keys(),
         suspects=suspects,
         weapons=weapons,
         rooms=rooms
@@ -275,7 +276,7 @@ def remove_known_from_guess(guess, disprovers):
     updated_disprovers = [d for d in disprovers]
     for card in guess:
         for disprover in disprovers:
-            if players[disprover].has(card):
+            if card in players[disprover].has:
                 # We already know which disprover has this, so remove it from consideration
                 updated_guess.remove(card)
                 updated_disprovers.remove(disprovers)
@@ -284,19 +285,20 @@ def remove_known_from_guess(guess, disprovers):
 @app.route('/enterOtherPlayerGuess', methods=["POST"])
 def enterOtherPlayerGuess():
     # Get other player's entered guess and disprovers from entry form
+    guesser = request.form.get("guesser")
     guessed_suspect = request.form.get("guessed_suspect")
     guessed_weapon = request.form.get("guessed_weapon")
     guessed_room = request.form.get("guessed_room")
-    disprovers = request.form.get("disprovers").remove("Me")
-    non_disprovers = [p for p in players.keys() if p not in disprovers]
+    disprovers = [disp for disp in request.form.getlist("disprovers") if disp != "Me"]
+    non_disprovers = [p for p in players.keys() if p not in disprovers + [guesser]]
     # Enter retrieved information
     guess = [guessed_suspect, guessed_weapon, guessed_room]
-    # Ignore the guessed card if I have it
-    if guessed_suspect in me.has:
+    # Ignore the guessed card if I have it or the guesser has it
+    if guessed_suspect in me.has or guessed_suspect in players[guesser].has:
         guess.remove(guessed_suspect)
-    if guessed_weapon in me.has:
+    if guessed_weapon in me.has or guessed_weapon in players[guesser].has:
         guess.remove(guessed_weapon)
-    if guessed_room in me.has:
+    if guessed_room in me.has or guessed_weapon in players[guesser].has:
         guess.remove(guessed_room)
     if not guess:
         # I had all the cards, so we're done here.

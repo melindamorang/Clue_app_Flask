@@ -4,10 +4,17 @@
 
 <h1>Enter another player's guess</h1>
 <form action="{{ url_for('enterOtherPlayerGuess') }}" method="post">
+    <h2>Which player guessed?</h2>
+    <select name="guesser">
+        {% for player in players %}
+        <option value="{{ player }}">{{ player }}</option>
+        {% endfor %}
+    </select>
 
     {% include "CardCombos.html" %}
 
     <h2>Which players disproved?</h2>
+        <input type="checkbox" value="Me" name="disprovers">Me<br>
         {% for player in players %}
             <input type="checkbox" value="{{ player }}" name="disprovers">{{ player }}<br>
         {% endfor %}
