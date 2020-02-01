@@ -80,8 +80,35 @@ class player():
             # We already knew this.
             return
         self.does_not_have.append(card)
+        # Check if no one has this card.  If so, we now no that this is the actual solution.
+        if is_actual_solution(card):
+            actual_solution.append(card)
+        # Remove this card from at_least_one guesses
+        self.remove_at_least_one(card)
+
+
+    def enter_at_least_one(self, guess):
+        """Indicate that the player has at least one card from this guess.
+
+        Search existing known information to try to narrow it down.
+        """
+        # If we already know this player has all the cards in the guess, then we didn't learn anything.
+        if set(guess).issubset(set(self.has + actual_solution)):
+            return
+        # Remove cards from guess that we already know this player doesn't have or that is the actual solution
+        # This also accounts for checking anything that other players do have.
+        guess = [card for card in guess if card not in self.does_not_have + actual_solution]
+        # TODO: Should probably do some error handling in case the guess is now empty
+        # If there's only one card in the guess, obviously this player has it.
+        if len(guess) == 1:
+            self.add_card(guess[0])
+            return
+        # Otherwise, we know the player has at least one of the remaining guessed cards
+        self.at_least_one.append(guess)
+
+    def remove_at_least_one(self, card):
         # Go through prior guesses where we know they had at least one of the cards
-        # and see if we can eliminate anything.
+        # and remove the current card. Update lists if we learned anything new.
         new_at_least_one = []
         for guess in self.at_least_one:
             # A guess will have either 2 or 3 cards in it
@@ -101,26 +128,6 @@ class player():
         self.at_least_one = new_at_least_one
 
 
-    def enter_at_least_one(self, guess):
-        """Indicate that the player has at least one card from this guess.
-
-        Search existing known information to try to narrow it down.
-        """
-        # If we already know this player has all the cards in the guess, then we didn't learn anything.
-        if set(guess).issubset(set(self.has)):
-            return
-        # Remove cards from guess that we already know this player doesn't have
-        # This also accounts for checking anything that other players do have.
-        guess = [card for card in guess if card not in self.does_not_have]
-        # TODO: Should probably do some error handling in case the guess is now empty
-        # If there's only one card in the guess, obviously this player has it.
-        if len(guess) == 1:
-            self.add_card(guess[0])
-            return
-        # Otherwise, we know the player has at least one of the remaining guessed cards
-        self.at_least_one.append(guess)
-
-
 # Players in the current game
 players = {}
 me = None
@@ -132,9 +139,22 @@ detective_notebook = {
     "rooms": {room: "" for room in rooms}
 }
 
+actual_solution = []
+
+def is_actual_solution(card):
+    """Return True if the current card is in not_has for all players."""
+    for player in players:
+        if card not in players[player].not_has:
+            # As soon as we are unsure of the card, return False because we can't tell
+            # if this is the real solution
+            return False
+    # If we found the card in all not_has lists, this must be the answer
+    return True
+
 def renderMyNotebook():
     # Update detective notebook with current information
     for player in players:
+        # Populate notebook with what we know each player has
         for card in players[player].has:
             if card in suspects:
                 detective_notebook["suspects"][card] = player
@@ -142,6 +162,15 @@ def renderMyNotebook():
                 detective_notebook["weapons"][card] = player
             elif card in rooms:
                 detective_notebook["rooms"][card] = player
+    # Render the known solution so far
+    for card in actual_solution:
+        if card in suspects:
+            detective_notebook["suspects"][card] = "SOLUTION"
+        elif card in weapons:
+            detective_notebook["weapons"][card] = "SOLUTION"
+        elif card in rooms:
+            detective_notebook["rooms"][card] = "SOLUTION"
+
     return render_template(
         "myNotebook.html",
         suspect_dict=detective_notebook["suspects"],
