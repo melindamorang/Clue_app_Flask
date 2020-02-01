@@ -58,6 +58,7 @@ class player():
         if card in self.has:
             # We already knew this.
             return
+        print(f"Adding card {card} for {self.name}")
         self.has.append(card)
         # Clean up at_least_ones with this card in it
         new_at_least_one = []
@@ -73,6 +74,7 @@ class player():
         # Since this player has this card, no one else does.
         if card in not_it_but_not_sure_who:
             not_it_but_not_sure_who.remove(card)
+            print("not_it_but_not_sure_who", not_it_but_not_sure_who)
         for plyr in [p for p in players.keys() if p != self.name]:
             players[plyr].enter_not_has(card)
 
@@ -84,10 +86,12 @@ class player():
         if card in self.does_not_have:
             # We already knew this.
             return
+        print(f"{self.name} does not have {card}.")
         self.does_not_have.append(card)
         # Check if no one has this card.  If so, we now no that this is the actual solution.
         if is_actual_solution(card):
             actual_solution.append(card)
+            print(f"{card} in actual solution!")
         # Remove this card from at_least_one guesses
         self.remove_at_least_one(card)
 
@@ -109,6 +113,7 @@ class player():
             self.add_card(guess[0])
             return
         # Otherwise, we know the player has at least one of the remaining guessed cards
+        print(f"{self.name} has at least one of:", guess)
         self.at_least_one.append(guess)
 
     def remove_at_least_one(self, card):
@@ -346,22 +351,25 @@ def enterOtherPlayerGuess():
     guessed_weapon = request.form.get("guessed_weapon")
     guessed_room = request.form.get("guessed_room")
     disprovers = [disp for disp in request.form.getlist("disprovers") if disp != "Me"]
-    num_disprovers = len(disprovers)
     non_disprovers = [p for p in players.keys() if p not in disprovers + [guesser]]
     # Enter retrieved information
     guess = [guessed_suspect, guessed_weapon, guessed_room]
-    # Ignore the guessed card if I have it or the guesser has it
-    if guessed_suspect in me.has or guessed_suspect in players[guesser].has:
+    print(f"Guess by {guesser}:", guess)
+    # Ignore the guessed card if I or the guesser has it or it's in the known solution
+    if guessed_suspect in me.has or guessed_suspect in players[guesser].has or guessed_suspect in actual_solution:
         guess.remove(guessed_suspect)
-    if guessed_weapon in me.has or guessed_weapon in players[guesser].has:
+    if guessed_weapon in me.has or guessed_weapon in players[guesser].has or guessed_suspect in actual_solution:
         guess.remove(guessed_weapon)
-    if guessed_room in me.has or guessed_weapon in players[guesser].has:
+    if guessed_room in me.has or guessed_weapon in players[guesser].has or guessed_suspect in actual_solution:
         guess.remove(guessed_room)
+    print("Updated guess:", guess)
     if not guess:
-        # I had or the guesser had all the cards, so we're done here.
+        # I or the guesser had all the cards, so we're done here.
         return renderMyNotebook()
     # Ignore the card and the disprover if we already know who has it    
     guess, disprovers = remove_known_from_guess(guess, disprovers)
+    print("Updated guess:", guess)
+    print("Updated disprovers:", disprovers)
     if not guess:
         # All the cards were known, so we're done here.
         return renderMyNotebook()
@@ -372,12 +380,15 @@ def enterOtherPlayerGuess():
     # The disprovers each have at least one of the remaining cards in the guess
     for person in disprovers:
         players[person].enter_at_least_one(guess)
-    # Special case when all three cards were disproved. We know none of them is the correct
-    # solution, although we don't know specifically who has what
-    if num_disprovers == 3:
+    # Special case when the number of remaining unknowns in the guess matches the number
+    # of remaining disprovers. We know none of them is the correct
+    # solution, although we don't know specifically who has what.
+    if len(disprovers) == len(guess):
+        print("Entering guess in not_it_but_not_sure_who", guess)
         for card in guess:
             not_it_but_not_sure_who.append(card)
             not_it_but_not_sure_who = list(set(not_it_but_not_sure_who))
+        print(not_it_but_not_sure_who)
 
     # Render notebook
     return renderMyNotebook()
