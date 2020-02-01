@@ -335,7 +335,7 @@ def remove_known_from_guess(guess, disprovers):
             if card in players[disprover].has:
                 # We already know which disprover has this, so remove it from consideration
                 updated_guess.remove(card)
-                updated_disprovers.remove(disprovers)
+                updated_disprovers.remove(disprover)
     return updated_guess, updated_disprovers
 
 @app.route('/enterOtherPlayerGuess', methods=["POST"])
