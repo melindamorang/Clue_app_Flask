@@ -82,18 +82,24 @@ class player():
         self.does_not_have.append(card)
         # Go through prior guesses where we know they had at least one of the cards
         # and see if we can eliminate anything.
-        for i in range(0, len(self.at_least_one)):
-            guess = self.at_least_one[i]  # A guess will have either 2 or 3 cards in it
+        new_at_least_one = []
+        for guess in self.at_least_one:
+            # A guess will have either 2 or 3 cards in it
             if card in guess:
+                # We narrowed things down. Remove this card from the guess
                 guess.remove(card)
                 if len(guess) == 1:
                     # We learned something!
                     # The player must have the remaining card in the guess
                     self.add_card(guess[0])
-                    del self.at_least_one[i]
-                else:
-                    # We narrowed things down. Update at_least_one.
-                    self.at_least_one[i] = guess
+                    # This guess has concluded, so continue to the next guess without
+                    # preserving this one in our updated guess list
+                    continue
+            # Preserve still-relevant guesses
+            new_at_least_one.append(guess)
+        # Update self.at_least_one with our new info
+        self.at_least_one = new_at_least_one
+
 
     def enter_at_least_one(self, guess):
         """Indicate that the player has at least one card from this guess.
