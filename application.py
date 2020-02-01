@@ -60,14 +60,19 @@ class player():
             return
         self.has.append(card)
         # Clean up at_least_ones with this card in it
-        for i in range(0, len(self.at_least_one)):
-            guess = self.at_least_one[i]  # A guess will have either 2 or 3 cards in it
+        new_at_least_one = []
+        for guess in self.at_least_one:
+            # A guess will have either 2 or 3 cards in it
             if card in guess:
                 if set(guess).issubset(set(self.has)):
                     # All remaining cards in the at_least_one guess belong to this player.
-                    # We won't get any further info out of this guess, so delete it.
-                    del self.at_least_one[i]
+                    # We won't get any further info out of this guess, so don't preserve it.
+                    continue
+            new_at_least_one.append(guess)
+        self.at_least_one = new_at_least_one
         # Since this player has this card, no one else does.
+        if card in not_it_but_not_sure_who:
+            not_it_but_not_sure_who.remove(card)
         for plyr in [p for p in players.keys() if p != self.name]:
             players[plyr].enter_not_has(card)
 
@@ -108,7 +113,8 @@ class player():
 
     def remove_at_least_one(self, card):
         # Go through prior guesses where we know they had at least one of the cards
-        # and remove the current card. Update lists if we learned anything new.
+        # and remove the current card that we know we don't have.
+        # Update lists if we learned anything new.
         new_at_least_one = []
         for guess in self.at_least_one:
             # A guess will have either 2 or 3 cards in it
@@ -139,10 +145,16 @@ detective_notebook = {
     "rooms": {room: "" for room in rooms}
 }
 
+# The current game's actual solution
 actual_solution = []
+
+# We know none of these is the actual solution, but we don't know who has which
+not_it_but_not_sure_who = []
 
 def is_actual_solution(card):
     """Return True if the current card is in not_has for all players."""
+    if card in not_it_but_not_sure_who:
+        return False
     for player in players:
         if card not in players[player].not_has:
             # As soon as we are unsure of the card, return False because we can't tell
@@ -162,6 +174,15 @@ def renderMyNotebook():
                 detective_notebook["weapons"][card] = player
             elif card in rooms:
                 detective_notebook["rooms"][card] = player
+    # For anything we know isn't the solution but we don't know the owner of,
+    # make a special mark
+    for card in not_it_but_not_sure_who:
+        if card in suspects:
+            detective_notebook["suspects"][card] = "NO"
+        elif card in weapons:
+            detective_notebook["weapons"][card] = "NO"
+        elif card in rooms:
+            detective_notebook["rooms"][card] = "NO"
     # Render the known solution so far
     for card in actual_solution:
         if card in suspects:
@@ -325,6 +346,7 @@ def enterOtherPlayerGuess():
     guessed_weapon = request.form.get("guessed_weapon")
     guessed_room = request.form.get("guessed_room")
     disprovers = [disp for disp in request.form.getlist("disprovers") if disp != "Me"]
+    num_disprovers = len(disprovers)
     non_disprovers = [p for p in players.keys() if p not in disprovers + [guesser]]
     # Enter retrieved information
     guess = [guessed_suspect, guessed_weapon, guessed_room]
@@ -336,7 +358,7 @@ def enterOtherPlayerGuess():
     if guessed_room in me.has or guessed_weapon in players[guesser].has:
         guess.remove(guessed_room)
     if not guess:
-        # I had all the cards, so we're done here.
+        # I had or the guesser had all the cards, so we're done here.
         return renderMyNotebook()
     # Ignore the card and the disprover if we already know who has it    
     guess, disprovers = remove_known_from_guess(guess, disprovers)
@@ -350,6 +372,13 @@ def enterOtherPlayerGuess():
     # The disprovers each have at least one of the remaining cards in the guess
     for person in disprovers:
         players[person].enter_at_least_one(guess)
+    # Special case when all three cards were disproved. We know none of them is the correct
+    # solution, although we don't know specifically who has what
+    if num_disprovers == 3:
+        for card in guess:
+            not_it_but_not_sure_who.append(card)
+            not_it_but_not_sure_who = list(set(not_it_but_not_sure_who))
+
     # Render notebook
     return renderMyNotebook()
 
