@@ -152,15 +152,15 @@ actual_solution = []
 not_it_but_not_sure_who = []
 
 def is_actual_solution(card):
-    """Return True if the current card is in not_has for all players."""
+    """Return True if the current card is in does_not_have for all players."""
     if card in not_it_but_not_sure_who:
         return False
     for player in players:
-        if card not in players[player].not_has:
+        if card not in players[player].does_not_have:
             # As soon as we are unsure of the card, return False because we can't tell
             # if this is the real solution
             return False
-    # If we found the card in all not_has lists, this must be the answer
+    # If we found the card in all does_not_have lists, this must be the answer
     return True
 
 def renderMyNotebook():
