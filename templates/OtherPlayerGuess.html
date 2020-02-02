@@ -14,7 +14,6 @@
     {% include "CardCombos.html" %}
 
     <h2>Which players disproved?</h2>
-        <input type="checkbox" value="Me" name="disprovers">Me<br>
         {% for player in players %}
             <input type="checkbox" value="{{ player }}" name="disprovers">{{ player }}<br>
         {% endfor %}
