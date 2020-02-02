@@ -104,6 +104,12 @@ class game():
         self.players[player_name].has.append(card)
         # Update detective notebook
         self.detective_notebook[get_card_type_key(card)][card] = player_name
+        # Since this player has this card, no one else does.
+        if card in self.not_it_but_not_sure_who:
+            self.not_it_but_not_sure_who.remove(card)
+            print("not_it_but_not_sure_who", self.not_it_but_not_sure_who)
+        for plyr in [p for p in self.players.keys() if p not in [player_name, "Me"]]:
+            self.enter_not_has(plyr, card)
         # Clean up at_least_ones with this card in it
         new_at_least_one = []
         for guess in self.players[player_name].at_least_one:
@@ -115,12 +121,6 @@ class game():
                     continue
             new_at_least_one.append(guess)
         self.players[player_name].at_least_one = new_at_least_one
-        # Since this player has this card, no one else does.
-        if card in self.not_it_but_not_sure_who:
-            self.not_it_but_not_sure_who.remove(card)
-            print("not_it_but_not_sure_who", self.not_it_but_not_sure_who)
-        for plyr in [p for p in self.players.keys() if p != player_name]:
-            self.enter_not_has(plyr, card)
 
     def enter_not_has(self, player_name, card):
         """Indicate that a player does not have a certain card.""" 
@@ -133,9 +133,9 @@ class game():
         if self.is_actual_solution(card):
             self.actual_solution.append(card)
             print(f"{card} in actual solution!")
+            card_type = get_card_type_key(card)
             self.detective_notebook[card_type][card] = "SOLUTION"
             # Update all other items in detective notebook with a mark indicating they aren't the solution
-            card_type = get_card_type_key(card)
             for card in cards[card_type]:
                 if not self.detective_notebook[card_type][card]:
                     self.detective_notebook[card_type][card] = "NO"
