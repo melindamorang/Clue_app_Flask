@@ -78,6 +78,62 @@ class TestClueLogic(unittest.TestCase):
             expected_detective_notebook["rooms"][room] = "Me"
         self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
         
+    def test_add_card(self):
+        """Test add_card."""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        player_to_add_to = "Sarah"
+        card_to_add = "Mr. Green"
+        game.not_it_but_not_sure_who = [card_to_add]
+        game.players[player_to_add_to].has.append("Horseshoe")
+        # Set up at_least_ones. With the addition of Mr. Green, the first entry should be eliminated, and the others should remain
+        game.players[player_to_add_to].at_least_one = [[card_to_add, "Horseshoe"], [card_to_add, "Lead Pipe"], ["Col. Mustard", "Billiard Room"]]
+        # Add the card
+        game.add_card(player_to_add_to, card_to_add)
+        # Make sure card was added to player's list
+        self.assertIn(card_to_add, game.players[player_to_add_to].has)
+        # Make sure detective notebook was updated
+        self.assertEqual(player_to_add_to, game.detective_notebook[clueLogic.get_card_type_key(card_to_add)][card_to_add])
+        # Make sure card was added to the other players' does_not_have list
+        for player in self.other_players:
+            if player == player_to_add_to:
+                continue
+            self.assertIn(card_to_add, game.players[player].does_not_have)
+        # Make sure the card was removed from not_it_but_not_sure_who
+        self.assertEqual([], game.not_it_but_not_sure_who)
+        # Make sure the player's at_least_one was updated
+        self.assertEqual([[card_to_add, "Lead Pipe"], ["Col. Mustard", "Billiard Room"]], game.players[player_to_add_to].at_least_one)
+
+    def test_enter_not_has(self):
+        """Test enter_not_has."""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        player_to_enter = "Sarah"
+        card_to_enter = "Sgt. Gray"
+        game.players[player_to_enter].has.append("Horseshoe")
+        for player in game.players:
+            if player not in ["Me", player_to_enter]:
+                game.players[player].does_not_have.append(card_to_enter)
+        # Set up at_least_ones. With the removal of Miss Scarlet, the first entry should be eliminated and the Poison added to has
+        # The second entry should get Miss Scarlet removed but leave the rest.
+        game.players[player_to_enter].at_least_one = [[card_to_enter, "Poison"], [card_to_enter, "Horseshoe", "Billiard Room"]]
+        # Add the card
+        game.enter_not_has(player_to_enter, card_to_enter)
+        # Make sure card was added to player's does_not_have list
+        self.assertIn(card_to_enter, game.players[player_to_enter].does_not_have)
+        # Make sure the player's at_least_one was updated
+        self.assertEqual([["Horseshoe", "Billiard Room"]], game.players[player_to_enter].at_least_one)
+        # Make sure actual_solution was updated
+        self.assertEqual([card_to_enter], game.actual_solution)
+        # Make sure detective notebook was updated
+        self.assertEqual("SOLUTION", game.detective_notebook["suspects"][card_to_enter])
+        for card in clueLogic.cards["suspects"]:
+            if card in self.my_suspects:
+                self.assertEqual("Me", game.detective_notebook["suspects"][card])
+            elif card != card_to_enter:
+                self.assertEqual("NO", game.detective_notebook["suspects"][card])
 
 
 if __name__ == '__main__':
