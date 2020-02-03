@@ -160,7 +160,7 @@ class game():
                 if len(guess) == 1:
                     # We learned something!
                     # The player must have the remaining card in the guess
-                    self.players[player_name].add_card(guess[0])
+                    self.add_card(player_name, guess[0])
                     # This guess has concluded, so continue to the next guess without
                     # preserving this one in our updated guess list
                     continue
@@ -208,20 +208,20 @@ class game():
         non_disprovers = [p for p in self.players.keys() if p not in [disprover_suspect, disprover_weapon, disprover_room, "Me"]]
         # Enter retrieved information
         if disprover_suspect:
-            self.players[disprover_suspect].add_card(guessed_suspect)
+            self.add_card(disprover_suspect, guessed_suspect)
         else:
             for player_name in non_disprovers:
-                self.players[player_name].enter_not_has(guessed_suspect)
+                self.enter_not_has(player_name, guessed_suspect)
         if disprover_weapon:
-            self.players[disprover_weapon].add_card(guessed_weapon)
+            self.add_card(disprover_weapon, guessed_weapon)
         else:
             for player_name in non_disprovers:
-                players[player_name].enter_not_has(guessed_weapon)
+                self.enter_not_has(player_name, guessed_weapon)
         if disprover_room:
-            self.players[disprover_room].add_card(guessed_room)
+            self.add_card(disprover_room, guessed_room)
         else:
             for player_name in non_disprovers:
-                players[player_name].enter_not_has(guessed_room)
+                self.enter_not_has(player_name, guessed_room)
 
     def narrow_down_guess(self, guess, disprovers):
         """For each disprover and remaining item in the guess, eliminate possibilities."""
@@ -233,7 +233,7 @@ class game():
         # If there's exactly one disprover and one card remaining in the guess, then we know
         # that remaining disprover had that card, and there's nothing more to do here.
         if len(guess) == 1 and len(disprovers) == 1:
-            self.players[disprovers[0]].add_card(guess[0])
+            self.add_card(disprovers[0], guess[0])
             return [], []
 
         # Otherwise, try to determine which disprover had which card.
@@ -246,7 +246,7 @@ class game():
             # If there's only one remaining possibility in the guess,
             # we know they have to have it.
             if len(possible_disproves[disprovers]) == 1:
-                self.players[disprover].add_card(possible_disproves[disprovers][0])
+                self.add_card(disprover, possible_disproves[disprovers][0])
                 # Eliminate the card and disprover from the possibilities
                 guess.remove(card)
                 disprovers.remove(disprovers)
@@ -277,7 +277,7 @@ class game():
         # The non-disprovers definitely don't have these cards.
         for person in non_disprovers:
             for card in guess:
-                players[person].enter_not_has(card)
+                self.enter_not_has(person, card)
         
         # For each disprover and remaining item in the guess, eliminate possibilities
         guess, disprovers = self.narrow_down_guess(guess, disprovers)
@@ -287,7 +287,7 @@ class game():
         
         # The remaining disprovers each have at least one of the remaining cards in the guess
         for person in disprovers:
-            players[person].enter_at_least_one(guess)
+            self.enter_at_least_one(person, guess)
 
         # Special case when the number of remaining unknowns in the guess matches the number
         # of remaining disprovers. We know none of them is the correct
