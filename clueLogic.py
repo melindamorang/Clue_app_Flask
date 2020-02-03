@@ -47,7 +47,9 @@ def get_card_type_key(card):
     if card in cards["rooms"]:
         return "rooms"
 
+
 class game():
+
     def __init__(self):
         """Initialize a new game."""
 
@@ -69,11 +71,19 @@ class game():
 
     class player():
         """Class defining a player in a game."""
-        def __init__(self, name, num_cards, initial_not_has=[], initial_has=[]):
+        def __init__(self, name, num_cards, initial_not_has=None, initial_has=None):
             self.name = name
             self.num_cards = num_cards
-            self.has = initial_has
-            self.does_not_have = initial_not_has
+            # Do not set the defaults to [] in the class definition because of
+            # https://stackoverflow.com/questions/14522537/python-adding-element-to-an-instances-list-also-adds-it-to-another-instances-l
+            if initial_not_has:
+                self.does_not_have = initial_not_has
+            else:
+                self.does_not_have = []
+            if initial_has:
+                self.has = initial_has
+            else:
+                self.has = []
             self.at_least_one = []
 
     def setup_game(self, my_suspects, my_weapons, my_rooms, other_players):
@@ -86,7 +96,7 @@ class game():
         self.players["Me"] = self.player("Me", len(my_cards), not_my_cards, my_cards)
         # Initialize other players
         for player_info in other_players:
-            self.players[player_info[0]] = self.player(player_info[0], player_info[1], my_cards)
+            self.players[player_info[0]] = self.player(player_info[0], player_info[1], [card for card in my_cards])
         # Update the detective notebook with my cards
         for suspect in my_suspects:
             self.detective_notebook["suspects"][suspect] = "Me"
