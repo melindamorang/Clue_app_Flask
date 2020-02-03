@@ -146,9 +146,9 @@ class game():
             card_type = get_card_type_key(card)
             self.detective_notebook[card_type][card] = "SOLUTION"
             # Update all other items in detective notebook with a mark indicating they aren't the solution
-            for card in cards[card_type]:
-                if not self.detective_notebook[card_type][card]:
-                    self.detective_notebook[card_type][card] = "NO"
+            for cd in cards[card_type]:
+                if not self.detective_notebook[card_type][cd]:
+                    self.detective_notebook[card_type][cd] = "NO"
         # Go through prior guesses where we know they had at least one of the cards
         # and remove the current card that we know we don't have.
         new_at_least_one = []
