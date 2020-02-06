@@ -242,14 +242,14 @@ class game():
         for disprover in possible_disproves:
             for card in guess:
                 if card in self.players[disprover].does_not_have:
-                    possible_disproves[disprovers].remove(card)
+                    possible_disproves[disprover].remove(card)
             # If there's only one remaining possibility in the guess,
             # we know they have to have it.
-            if len(possible_disproves[disprovers]) == 1:
-                self.add_card(disprover, possible_disproves[disprovers][0])
+            if len(possible_disproves[disprover]) == 1:
+                self.add_card(disprover, possible_disproves[disprover][0])
                 # Eliminate the card and disprover from the possibilities
                 guess.remove(card)
-                disprovers.remove(disprovers)
+                disprovers.remove(disprover)
                 # Recursively call this function to try to eliminate some more.
                 self.narrow_down_guess(guess, disprovers)
 
