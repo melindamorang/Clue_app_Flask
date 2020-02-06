@@ -242,6 +242,43 @@ class TestClueLogic(unittest.TestCase):
         guess = ["Sgt. Gray", "Lead Pipe", "Studio"]
         self.assertEqual(["Lead Pipe"], game.remove_known_from_guess("Andy", guess))
 
+    def test_enter_other_players_guess(self):
+        """Test enter_other_players_guess."""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+
+        # Basic test 1: adding to a disprover's at_least_one
+        guesser = "Susan"
+        guessed_suspect = "Prof. Plum" # I have this one
+        guessed_weapon = "Wrench" # Andy has this one
+        guessed_room = "Library" # Susan is being tricky and has this one herself, but we don't know it.
+        disprovers = ["Andy"] # Sarah could not disprove.
+        game.enter_other_players_guess(guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers)
+        # Sarah is not a disprover, so her does_not_have gets updated to include all cards in the guess
+        self.assertIn(guessed_weapon, game.players["Sarah"].does_not_have)
+        self.assertIn(guessed_room, game.players["Sarah"].does_not_have)
+        # Andy gets the guess items added to at_leaest_one
+        self.assertIn([guessed_weapon, guessed_room], game.players["Andy"].at_least_one)
+        # not_it_but_not_sure_who should not be updated
+        self.assertEqual([], game.not_it_but_not_sure_who)
+
+        # Basic test 2: special case for not_it_but_not_sure_who
+        guesser = "Sarah"
+        guessed_suspect = "Prof. Plum" # I have this one
+        guessed_weapon = "Rope" # Andy has this one
+        guessed_room = "Trophy Room" # Susan has this one
+        disprovers = ["Susan", "Andy"] # Andy, Susan, and I all disproved
+        game.enter_other_players_guess(guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers)
+        # We should be able to determine that Sarah has none of these cards
+        self.assertIn(guessed_weapon, game.players["Sarah"].does_not_have)
+        self.assertIn(guessed_room, game.players["Sarah"].does_not_have)
+        # Andy and Susan get the guess items added to at_leaest_one
+        self.assertIn([guessed_weapon, guessed_room], game.players["Andy"].at_least_one)
+        self.assertIn([guessed_weapon, guessed_room], game.players["Susan"].at_least_one)
+        # not_it_but_not_sure_who should be updated
+        self.assertEqual([guessed_weapon, guessed_room], game.not_it_but_not_sure_who)
+
 
 if __name__ == '__main__':
     unittest.main()
