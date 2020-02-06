@@ -45,6 +45,7 @@ class TestClueLogic(unittest.TestCase):
                 "Courtyard"
             ]
         }
+        # Actual solution is Sgt. Gray, Candlestick, Studio
 
         self.my_suspects = [card for card in self.sample_game["Me"] if clueLogic.get_card_type_key(card) == "suspects"]
         self.my_weapons = [card for card in self.sample_game["Me"] if clueLogic.get_card_type_key(card) == "weapons"]
@@ -134,6 +135,29 @@ class TestClueLogic(unittest.TestCase):
                 self.assertEqual("Me", game.detective_notebook["suspects"][card])
             elif card != card_to_enter:
                 self.assertEqual("NO", game.detective_notebook["suspects"][card])
+
+    def test_enter_at_least_one(self):
+        """Test enter_at_least_one."""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        game.actual_solution = ["Sgt. Gray", "Studio"]
+        player_to_enter = "Sarah"
+        game.players[player_to_enter].has.append("Horseshoe")
+        game.players[player_to_enter].does_not_have.append("Dining Room")
+        # If we already know this player has all the cards in the guess, method does nothing
+        game.enter_at_least_one(player_to_enter, ["Sgt. Gray", "Horseshoe"])
+        self.assertEqual([], game.players[player_to_enter].at_least_one)
+        # Test removing cards we know the player doesn't have from the guess and adding a card to has
+        # if there is only one remaining. We know she doesn't have Sgt. Gray or the Dining Room,
+        # so she must have the Poison.
+        game.enter_at_least_one(player_to_enter, ["Sgt. Gray", "Poison", "Dining Room"])
+        self.assertEqual([], game.players[player_to_enter].at_least_one)
+        self.assertIn("Poison", game.players[player_to_enter].has)
+        # Test actually adding to at_least_one when we can't determine any further info
+        # Sgt. Gray should be weeded out, but we don't know about Rope and Fountain
+        game.enter_at_least_one(player_to_enter, ["Sgt. Gray", "Rope", "Fountain"])
+        self.assertIn(["Rope", "Fountain"], game.players[player_to_enter].at_least_one)
 
 
 if __name__ == '__main__':
