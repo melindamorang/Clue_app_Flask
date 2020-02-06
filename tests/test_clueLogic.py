@@ -222,6 +222,26 @@ class TestClueLogic(unittest.TestCase):
         self.assertEqual((["Lead Pipe", "Fountain"], ["Andy", "Sarah"]), game.narrow_down_guess(guess, disprovers))
         self.assertIn("Mrs. Peacock", game.players["Susan"].has)
 
+    def test_remove_known_from_guess(self):
+        """Test remove_known_from_guess."""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        game.players["Susan"].has.append("Mrs. Peacock")
+        game.actual_solution = ["Sgt. Gray", "Studio"]
+
+        # Function should remove something that the guesser has
+        guess = ["Mrs. Peacock", "Lead Pipe", "Fountain"]
+        self.assertEqual(["Lead Pipe", "Fountain"], game.remove_known_from_guess("Susan", guess))
+
+        # Function should remove one of my cards from the guess
+        guess = ["Mrs. Peacock", "Revolver", "Fountain"]
+        self.assertEqual(["Mrs. Peacock", "Fountain"], game.remove_known_from_guess("Andy", guess))
+
+        # Function should remove known solution cards from guess
+        guess = ["Sgt. Gray", "Lead Pipe", "Studio"]
+        self.assertEqual(["Lead Pipe"], game.remove_known_from_guess("Andy", guess))
+
 
 if __name__ == '__main__':
     unittest.main()
