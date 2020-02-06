@@ -120,6 +120,11 @@ class game():
             print("not_it_but_not_sure_who", self.not_it_but_not_sure_who)
         for plyr in [p for p in self.players.keys() if p not in [player_name, "Me"]]:
             self.enter_not_has(plyr, card)
+        # If we now know all of the player's cards, then we know they don't have any other cards
+        if len(self.players[player_name].has) == self.players[player_name].num_cards:
+            for cd in cards["suspects"] + cards["weapons"] + cards["rooms"]:
+                if cd not in self.players[player_name].has:
+                    self.enter_not_has(player_name, cd)
         # Clean up at_least_ones with this card in it
         new_at_least_one = []
         for guess in self.players[player_name].at_least_one:
@@ -323,7 +328,6 @@ class game():
                 self.not_it_but_not_sure_who.append(card)
                 self.not_it_but_not_sure_who = list(set(self.not_it_but_not_sure_who))
             print(self.not_it_but_not_sure_who)
-
 
 
 if __name__ == '__main__':

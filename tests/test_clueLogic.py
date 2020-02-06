@@ -106,6 +106,28 @@ class TestClueLogic(unittest.TestCase):
         # Make sure the player's at_least_one was updated
         self.assertEqual([[card_to_add, "Lead Pipe"], ["Col. Mustard", "Billiard Room"]], game.players[player_to_add_to].at_least_one)
 
+        # Test behavior when adding the last unknown card to a player
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        player_to_add_to = "Sarah"
+        card_to_add = "Mr. Green"
+        # We already know all of Sarah's cards except one
+        game.players[player_to_add_to].has = [
+            "M. Brunette",
+            "Horseshoe"
+            "Poison",
+            "Billiard Room",
+            "Fountain",
+            "Courtyard"
+        ]
+        # Add the card
+        game.add_card(player_to_add_to, card_to_add)
+        # Make sure card was added to player's list
+        self.assertIn(card_to_add, game.players[player_to_add_to].has)
+        # Make sure all of the other cards are now in Sarah's does_not_have
+        for card in self.sample_game["Me"] + self.sample_game["Andy"] + self.sample_game["Susan"]:
+            self.assertIn(card, game.players[player_to_add_to].does_not_have)
+
     def test_enter_not_has(self):
         """Test enter_not_has."""
         # Set up a contrived game with circumstances useful for testing
