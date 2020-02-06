@@ -159,6 +159,36 @@ class TestClueLogic(unittest.TestCase):
         game.enter_at_least_one(player_to_enter, ["Sgt. Gray", "Rope", "Fountain"])
         self.assertIn(["Rope", "Fountain"], game.players[player_to_enter].at_least_one)
 
+    def test_enter_disproval_of_my_guess(self):
+        """Test enter_at_least_one."""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        # Test that has gets updated for all disprovers
+        guessed_suspect = "Mrs. Peacock"
+        guessed_weapon = "Lead Pipe"
+        guessed_room = "Fountain"
+        disprover_suspect = "Susan"
+        disprover_weapon = "Andy"
+        disprover_room = "Sarah"
+        game.enter_disproval_of_my_guess(guessed_suspect, guessed_weapon, guessed_room,
+                                         disprover_suspect, disprover_weapon, disprover_room)
+        self.assertIn(guessed_suspect, game.players[disprover_suspect].has)
+        self.assertIn(guessed_weapon, game.players[disprover_weapon].has)
+        self.assertIn(guessed_room, game.players[disprover_room].has)
+        self.assertEqual([], game.players[disprover_room].at_least_one)
+        # Test that all non-disprovers get cards added to does_not_have
+        # Use the real solution
+        guessed_suspect = "Sgt. Gray"
+        guessed_weapon = "Candlestick"
+        guessed_room = "Studio"
+        disprover_suspect = None
+        disprover_weapon = None
+        disprover_room = None
+        game.enter_disproval_of_my_guess(guessed_suspect, guessed_weapon, guessed_room,
+                                         disprover_suspect, disprover_weapon, disprover_room)
+        for player in game.players:
+            self.assertIn(guessed_suspect, game.players[player].does_not_have)
 
 if __name__ == '__main__':
     unittest.main()
