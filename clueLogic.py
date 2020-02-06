@@ -270,10 +270,10 @@ class game():
         """Get other player's entered guess and disprovers and see what we can learn."""
         guess = [guessed_suspect, guessed_weapon, guessed_room]
         print(f"Guess by {guesser}:", guess)
-        non_disprovers = [p for p in players.keys() if p not in disprovers + [guesser, "Me"]]
+        non_disprovers = [p for p in self.players.keys() if p not in disprovers + [guesser, "Me"]]
 
         # Ignore the guessed card if I or the guesser has it or it's in the known solution
-        guess = remove_known_from_guess(guess)
+        guess = self.remove_known_from_guess(guesser, guess)
         if not guess:
             # I or the guesser had all the cards, or they're in the known solution, so we're done here.
             return
@@ -282,16 +282,37 @@ class game():
         for person in non_disprovers:
             for card in guess:
                 self.enter_not_has(person, card)
+        # Clean up the guess again in case entering not_has triggered more information
+        guess = self.remove_known_from_guess(guesser, guess)
+        if not guess:
+            return
         
+        # If the number of disprovers is equal to the number of cards remaining in the guess,
+        # then the guesser definitely doesn't have any of the cards.
+        if len(disprovers) == len(guess):
+            for card in guess:
+                self.enter_not_has(guesser, card)
+        # Clean up the guess again in case entering not_has triggered more information
+        guess = self.remove_known_from_guess(guesser, guess)
+        if not guess:
+            return
+
         # For each disprover and remaining item in the guess, eliminate possibilities
         guess, disprovers = self.narrow_down_guess(guess, disprovers)
+        # Clean up the guess again in case entering narrowing the guess down triggered more information
+        guess = self.remove_known_from_guess(guesser, guess)
         if not guess:
             # We figured it all out. We're done.
             return
-        
+
         # The remaining disprovers each have at least one of the remaining cards in the guess
         for person in disprovers:
             self.enter_at_least_one(person, guess)
+        # Clean up the guess again in case entering narrowing the guess down triggered more information
+        guess = self.remove_known_from_guess(guesser, guess)
+        if not guess:
+            # We figured it all out. We're done.
+            return
 
         # Special case when the number of remaining unknowns in the guess matches the number
         # of remaining disprovers. We know none of them is the correct
