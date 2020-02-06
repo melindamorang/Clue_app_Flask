@@ -160,7 +160,7 @@ class TestClueLogic(unittest.TestCase):
         self.assertIn(["Rope", "Fountain"], game.players[player_to_enter].at_least_one)
 
     def test_enter_disproval_of_my_guess(self):
-        """Test enter_at_least_one."""
+        """Test enter_disproval_of_my_guess."""
         # Set up a contrived game with circumstances useful for testing
         game = clueLogic.game()
         game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
@@ -189,6 +189,39 @@ class TestClueLogic(unittest.TestCase):
                                          disprover_suspect, disprover_weapon, disprover_room)
         for player in game.players:
             self.assertIn(guessed_suspect, game.players[player].does_not_have)
+
+    def test_narrow_down_guess(self):
+        """Test narrow_down_guess."""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+
+        # Test that we get empty lists if the input guess is empty
+        self.assertEqual(([], []), game.narrow_down_guess([], []))
+
+        # If there's exactly one disprover and one card remaining in the guess, we should
+        # get empty lists returned, and the card should be added to the disprover
+        guess = ["Mr. Green"]
+        disprovers = ["Sarah"]
+        self.assertEqual(([], []), game.narrow_down_guess(guess, disprovers))
+        self.assertIn(guess[0], game.players[disprovers[0]].has)
+
+        # Test that when we have no information to narrow down the guess, the function
+        # just returns the input
+        guess = ["Mrs. Peacock", "Lead Pipe", "Fountain"]
+        disprovers = ["Susan", "Andy", "Sarah"]
+        self.assertEqual((guess, disprovers), game.narrow_down_guess(guess, disprovers))
+
+        # Test that the function successfully narrows down the possibilities to figure out who
+        # at least one disprover is. We'll determine that Susan has Mrs. Peacock, and the method
+        # should eliminate Susan and Mrs. Peacock from the returned lists.
+        game.players["Susan"].does_not_have.append("Lead Pipe")
+        game.players["Susan"].does_not_have.append("Fountain")
+        guess = ["Mrs. Peacock", "Lead Pipe", "Fountain"]
+        disprovers = ["Susan", "Andy", "Sarah"]
+        self.assertEqual((["Lead Pipe", "Fountain"], ["Andy", "Sarah"]), game.narrow_down_guess(guess, disprovers))
+        self.assertIn("Mrs. Peacock", game.players["Susan"].has)
+
 
 if __name__ == '__main__':
     unittest.main()
