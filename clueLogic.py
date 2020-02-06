@@ -257,6 +257,15 @@ class game():
         # We've run out of stuff to learn. Return remaining unknown guess items and disprovers
         return guess, disprovers
 
+    def remove_known_from_guess(self, guesser, guess):
+        """Remove items from the guess if they're mine, the guesser's, or in the known solution."""
+        updated_guess = [card for card in guess]
+        for card in guess:
+            if card in self.players["Me"].has or card in self.players[guesser].has or card in self.actual_solution:
+                updated_guess.remove(card)
+        print("Updated guess:", updated_guess)
+        return updated_guess
+
     def enter_other_players_guess(self, guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers):
         """Get other player's entered guess and disprovers and see what we can learn."""
         guess = [guessed_suspect, guessed_weapon, guessed_room]
@@ -264,13 +273,7 @@ class game():
         non_disprovers = [p for p in players.keys() if p not in disprovers + [guesser, "Me"]]
 
         # Ignore the guessed card if I or the guesser has it or it's in the known solution
-        if guessed_suspect in me.has or guessed_suspect in players[guesser].has or guessed_suspect in actual_solution:
-            guess.remove(guessed_suspect)
-        if guessed_weapon in me.has or guessed_weapon in players[guesser].has or guessed_suspect in actual_solution:
-            guess.remove(guessed_weapon)
-        if guessed_room in me.has or guessed_weapon in players[guesser].has or guessed_suspect in actual_solution:
-            guess.remove(guessed_room)
-        print("Updated guess:", guess)
+        guess = remove_known_from_guess(guess)
         if not guess:
             # I or the guesser had all the cards, or they're in the known solution, so we're done here.
             return
