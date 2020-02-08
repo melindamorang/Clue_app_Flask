@@ -59,6 +59,7 @@ class TestClueLogic(unittest.TestCase):
         game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
         self.assertEqual(4, len(game.players))
         # Make sure players are properly initialized
+        self.assertCountEqual(list(self.sample_game.keys()), list(game.players.keys()))
         # The confusingly-named assertCountEqual does an unordered list comparison
         self.assertCountEqual(self.sample_game["Me"], game.players["Me"].has)
         for player in self.other_players:
