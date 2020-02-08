@@ -63,6 +63,10 @@ class game():
             "rooms": {room: "" for room in cards["rooms"]}
         }
 
+        # Running log of stuff happening in the game
+        self.log = []
+        self.add_to_log("New game initalized.")
+
         # The current game's actual solution
         self.actual_solution = []
 
@@ -86,17 +90,25 @@ class game():
                 self.has = []
             self.at_least_one = []
 
+    def add_to_log(self, msg):
+        """Insert a log message at the front of the log list."""
+        print(msg)
+        self.log.insert(0, msg)
+
     def setup_game(self, my_suspects, my_weapons, my_rooms, other_players):
         """Initialize beginning-of-game info, including my own cards and the names of the other players.
-        
+
         other_players: List of tuples of (player_name, number of cards for that player)"""
+
         # Initialize myself as a player object
         my_cards = my_suspects + my_weapons + my_rooms
         not_my_cards = [card for card in cards["suspects"] + cards["weapons"] + cards["rooms"] if card not in my_cards]
         self.players["Me"] = self.player("Me", len(my_cards), not_my_cards, my_cards)
+        self.add_to_log("Initialized 'Me'.")
         # Initialize other players
         for player_info in other_players:
             self.players[player_info[0]] = self.player(player_info[0], player_info[1], [card for card in my_cards])
+            self.add_to_log(f"Initialized '{player_info[0]}'.")
         # Update the detective notebook with my cards
         for suspect in my_suspects:
             self.detective_notebook["suspects"][suspect] = "Me"
@@ -110,14 +122,13 @@ class game():
         if card in self.players[player_name].has:
             # We already knew this.
             return
-        print(f"Adding card {card} for {player_name}")
+        self.add_to_log(f"Adding card {card} for {player_name}")
         self.players[player_name].has.append(card)
         # Update detective notebook
         self.detective_notebook[get_card_type_key(card)][card] = player_name
         # Since this player has this card, no one else does.
         if card in self.not_it_but_not_sure_who:
             self.not_it_but_not_sure_who.remove(card)
-            print("not_it_but_not_sure_who", self.not_it_but_not_sure_who)
         for plyr in [p for p in self.players.keys() if p not in [player_name, "Me"]]:
             self.enter_not_has(plyr, card)
         # If we now know all of the player's cards, then we know they don't have any other cards
@@ -142,12 +153,12 @@ class game():
         if card in self.players[player_name].does_not_have:
             # We already knew this.
             return
-        print(f"{player_name} does not have {card}.")
+        self.add_to_log(f"{player_name} does not have {card}.")
         self.players[player_name].does_not_have.append(card)
         # Check if no one has this card.  If so, we now know that this is the actual solution.
         if self.is_actual_solution(card):
             self.actual_solution.append(card)
-            print(f"{card} in actual solution!")
+            self.add_to_log(f"{card} is in actual solution!")
             card_type = get_card_type_key(card)
             self.detective_notebook[card_type][card] = "SOLUTION"
             # Update all other items in detective notebook with a mark indicating they aren't the solution
@@ -187,7 +198,7 @@ class game():
             self.add_card(player_name, guess[0])
             return
         # Otherwise, we know the player has at least one of the remaining guessed cards
-        print(f"{player_name} has at least one of:", guess)
+        self.add_to_log(f"{player_name} has at least one of: {', '.join(guess)}")
         self.players[player_name].at_least_one.append(guess)
 
     def is_actual_solution(self, card):
@@ -210,27 +221,33 @@ class game():
     def enter_disproval_of_my_guess(self, guessed_suspect, guessed_weapon, guessed_room,
                                     disprover_suspect=None, disprover_weapon=None, disprover_room=None):
         """Enter info when someone disproves my guess."""
+        self.add_to_log(f"I guessed: {guessed_suspect}, {guessed_weapon}, {guessed_room}")
         non_disprovers = [p for p in self.players.keys() if p not in [disprover_suspect, disprover_weapon, disprover_room, "Me"]]
         # Enter retrieved information
         if disprover_suspect:
+            self.add_to_log(f"{disprover_suspect} disproved {guessed_suspect}.")
             self.add_card(disprover_suspect, guessed_suspect)
         else:
+            self.add_to_log(f"No one disproved {guessed_suspect}.")
             for player_name in non_disprovers:
                 self.enter_not_has(player_name, guessed_suspect)
         if disprover_weapon:
+            self.add_to_log(f"{disprover_weapon} disproved {guessed_weapon}.")
             self.add_card(disprover_weapon, guessed_weapon)
         else:
+            self.add_to_log(f"No one disproved {guessed_weapon}.")
             for player_name in non_disprovers:
                 self.enter_not_has(player_name, guessed_weapon)
         if disprover_room:
+            self.add_to_log(f"{disprover_room} disproved {guessed_room}.")
             self.add_card(disprover_room, guessed_room)
         else:
+            self.add_to_log(f"No one disproved {guessed_room}.")
             for player_name in non_disprovers:
                 self.enter_not_has(player_name, guessed_room)
 
     def narrow_down_guess(self, guess, disprovers):
         """For each disprover and remaining item in the guess, eliminate possibilities."""
-        print("Narrowing down guess:", guess, disprovers)
         # If the guess is empty, we're done
         if not guess:
             return [], []
@@ -268,13 +285,13 @@ class game():
         for card in guess:
             if card in self.players["Me"].has or card in self.players[guesser].has or card in self.actual_solution:
                 updated_guess.remove(card)
-        print("Updated guess:", updated_guess)
         return updated_guess
 
     def enter_other_players_guess(self, guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers):
         """Get other player's entered guess and disprovers and see what we can learn."""
+        self.add_to_log(f"Guess by {guesser}: {guessed_suspect}, {guessed_weapon}, {guessed_room}")
+        self.add_to_log(f"Disprovers: {', '.join(disprovers)}")
         guess = [guessed_suspect, guessed_weapon, guessed_room]
-        print(f"Guess by {guesser}:", guess)
         non_disprovers = [p for p in self.players.keys() if p not in disprovers + [guesser, "Me"]]
 
         # Ignore the guessed card if I or the guesser has it or it's in the known solution
