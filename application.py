@@ -7,6 +7,7 @@ app.config.from_object(__name__)
 
 game = clueLogic.game()
 
+@app.route('/renderMyNotebook')
 def renderMyNotebook():
     """Render the detective notebook main game page."""
     return render_template(
