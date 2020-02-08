@@ -122,7 +122,7 @@ class game():
         if card in self.players[player_name].has:
             # We already knew this.
             return
-        self.add_to_log(f"Adding card {card} for {player_name}")
+        self.add_to_log(f"{player_name} has {card}.")
         self.players[player_name].has.append(card)
         # Update detective notebook
         self.detective_notebook[get_card_type_key(card)][card] = player_name

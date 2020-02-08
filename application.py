@@ -14,7 +14,8 @@ def renderMyNotebook():
         "myNotebook.html",
         suspect_dict=game.detective_notebook["suspects"],
         weapon_dict=game.detective_notebook["weapons"],
-        room_dict=game.detective_notebook["rooms"]
+        room_dict=game.detective_notebook["rooms"],
+        log=game.log
         )
 
 @app.route('/')
