@@ -21,9 +21,9 @@ def renderMyNotebook():
 def index():
     return render_template(
         "index.html",
-        suspects=game.cards["suspects"],
-        weapons=game.cards["weapons"],
-        rooms=game.cards["rooms"]
+        suspects=clueLogic.cards["suspects"],
+        weapons=clueLogic.cards["weapons"],
+        rooms=clueLogic.cards["rooms"]
         )
 
 @app.route('/enterCards', methods=["POST"])
@@ -38,7 +38,8 @@ def enterCards():
     for i in range(2, 11):
         player_name = request.form.get(f"Player_{i}")
         num_cards = request.form.get(f"num_cards_{i}")
-        other_players.append((player_name, num_cards,))
+        if player_name and num_cards:
+            other_players.append((player_name, num_cards,))
 
     # Set up the game
     game.setup_game(my_suspects, my_weapons, my_rooms, other_players)
@@ -47,12 +48,13 @@ def enterCards():
 
 @app.route('/snoop')
 def snoop():
+    other_players = [player for player in game.players if player != "Me"]
     return render_template(
         "snoop.html",
-        players=players.keys(),
-        suspects=[suspect for suspect in game.cards["suspects"] if suspect not in game.players["Me"].has],
-        weapons=[weapon for weapon in game.cards["weapons"] if weapon not in game.players["Me"].has],
-        rooms=[room for room in game.cards["rooms"] if room not in game.players["Me"].has]
+        players=other_players,
+        suspects=[suspect for suspect in clueLogic.cards["suspects"] if suspect not in game.players["Me"].has],
+        weapons=[weapon for weapon in clueLogic.cards["weapons"] if weapon not in game.players["Me"].has],
+        rooms=[room for room in clueLogic.cards["rooms"] if room not in game.players["Me"].has]
         )
 
 @app.route('/enterSnoop', methods=["POST"])
@@ -61,7 +63,7 @@ def enterSnoop():
     player = request.form.get("player")
     card = request.form.get("card")
     # Update player info
-    game.players[player].add_card(card)
+    game.add_card(player, card)
     # Render notebook
     return renderMyNotebook()
 
@@ -69,9 +71,9 @@ def enterSnoop():
 def guess():
     return render_template(
         "guess.html",
-        suspects=game.cards["suspects"],
-        weapons=game.cards["weapons"],
-        rooms=game.cards["rooms"],
+        suspects=clueLogic.cards["suspects"],
+        weapons=clueLogic.cards["weapons"],
+        rooms=clueLogic.cards["rooms"],
         suspect_dict=game.detective_notebook["suspects"],
         weapon_dict=game.detective_notebook["weapons"],
         room_dict=game.detective_notebook["rooms"]
@@ -112,12 +114,13 @@ def enterDisprove():
 
 @app.route('/otherPlayerGuess')
 def otherPlayerGuess():
+    other_players = [player for player in game.players if player != "Me"]
     return render_template(
         "OtherPlayerGuess.html",
-        players=game.players.keys(),
-        suspects=game.cards["suspects"],
-        weapons=game.cards["weapons"],
-        rooms=game.cards["rooms"]
+        players=other_players,
+        suspects=clueLogic.cards["suspects"],
+        weapons=clueLogic.cards["weapons"],
+        rooms=clueLogic.cards["rooms"]
         )
 
 @app.route('/enterOtherPlayerGuess', methods=["POST"])
