@@ -300,7 +300,7 @@ class TestClueLogic(unittest.TestCase):
         self.assertIn([guessed_weapon, guessed_room], game.players["Andy"].at_least_one)
         self.assertIn([guessed_weapon, guessed_room], game.players["Susan"].at_least_one)
         # not_it_but_not_sure_who should be updated
-        self.assertEqual([guessed_weapon, guessed_room], game.not_it_but_not_sure_who)
+        self.assertCountEqual([guessed_weapon, guessed_room], game.not_it_but_not_sure_who)
 
 
 if __name__ == '__main__':
