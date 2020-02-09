@@ -86,13 +86,14 @@ def enterGuess():
     guessed_suspect = request.form.get("guessed_suspect")
     guessed_weapon = request.form.get("guessed_weapon")
     guessed_room = request.form.get("guessed_room")
+    other_players = [player for player in game.players if player != "Me"]
     # Render page where you can enter disproval
     return render_template(
         "DisproveMyGuess.html",
         guessed_suspect=guessed_suspect,
         guessed_weapon=guessed_weapon,
         guessed_room=guessed_room,
-        players=game.players.keys()
+        players=other_players
         )
 
 @app.route('/enterDisprove', methods=["POST"])
