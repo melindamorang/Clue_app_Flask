@@ -111,11 +111,41 @@ class game():
             self.add_to_log(f"Initialized '{player_info[0]}'.")
         # Update the detective notebook with my cards
         for suspect in my_suspects:
-            self.detective_notebook["suspects"][suspect] = "Me"
+            self.update_detective_notebook(suspect, "Me", "suspects")
         for weapon in my_weapons:
-            self.detective_notebook["weapons"][weapon] = "Me"
+            self.update_detective_notebook(weapon, "Me", "weapons")
         for room in my_rooms:
-            self.detective_notebook["rooms"][room] = "Me"
+            self.update_detective_notebook(room, "Me", "rooms")
+
+    def check_for_solution_by_elimination(self):
+        """Check if we've eliminated options sufficiently to determine the actual solution."""
+        for card_type in cards:
+            unknown = []
+            for card in cards[card_type]:
+                if not self.detective_notebook[card_type][card]:
+                    unknown.append(card)
+            # If there is only one remaining unknown in the category, this must be the actual solution.
+            if len(unknown) == 1:
+                self.add_to_log(f"{card} is the last remaining unknown in {card_type}.")
+                self.add_to_log(f"{card} is in actual solution!")
+                self.detective_notebook[card_type][unknown[0]] = "SOLUTION"
+                self.actual_solution.append(unknown[0])
+                for player in self.players:
+                    self.enter_not_has(player, unknown[0])
+
+    def update_detective_notebook(self, card, owner, card_type=None):
+        """Update the detective notebook with new information."""
+        if not card_type:
+            card_type = get_card_type_key(card)
+        self.detective_notebook[card_type][card] = owner
+        if owner == "SOLUTION":
+            # Update all other items in detective notebook with a mark indicating they aren't the solution
+            for cd in cards[card_type]:
+                if not self.detective_notebook[card_type][cd]:
+                    self.detective_notebook[card_type][cd] = "NO"
+        else:
+            self.check_for_solution_by_elimination()
+        
 
     def add_card(self, player_name, card):
         """Indicate that a player has a certain card."""
@@ -125,7 +155,7 @@ class game():
         self.add_to_log(f"{player_name} has {card}.")
         self.players[player_name].has.append(card)
         # Update detective notebook
-        self.detective_notebook[get_card_type_key(card)][card] = player_name
+        self.update_detective_notebook(card, player_name)
         # Since this player has this card, no one else does.
         if card in self.not_it_but_not_sure_who:
             self.not_it_but_not_sure_who.remove(card)
@@ -159,12 +189,7 @@ class game():
         if self.is_actual_solution(card):
             self.actual_solution.append(card)
             self.add_to_log(f"{card} is in actual solution!")
-            card_type = get_card_type_key(card)
-            self.detective_notebook[card_type][card] = "SOLUTION"
-            # Update all other items in detective notebook with a mark indicating they aren't the solution
-            for cd in cards[card_type]:
-                if not self.detective_notebook[card_type][cd]:
-                    self.detective_notebook[card_type][cd] = "NO"
+            self.update_detective_notebook(card, "SOLUTION")
         # Go through prior guesses where we know they had at least one of the cards
         # and remove the current card that we know we don't have.
         new_at_least_one = []
@@ -223,6 +248,8 @@ class game():
         """Enter info when someone disproves my guess."""
         self.add_to_log(f"I guessed: {guessed_suspect}, {guessed_weapon}, {guessed_room}")
         non_disprovers = [p for p in self.players.keys() if p not in [disprover_suspect, disprover_weapon, disprover_room, "Me"]]
+        for nond in non_disprovers:
+            self.add_to_log(f"{nond} did not disprove.")
         # Enter retrieved information
         if disprover_suspect:
             self.add_to_log(f"{disprover_suspect} disproved {guessed_suspect}.")
@@ -293,6 +320,8 @@ class game():
         self.add_to_log(f"Disprovers: {', '.join(disprovers)}")
         guess = [guessed_suspect, guessed_weapon, guessed_room]
         non_disprovers = [p for p in self.players.keys() if p not in disprovers + [guesser, "Me"]]
+        for nond in non_disprovers:
+            self.add_to_log(f"{nond} did not disprove.")
 
         # Ignore the guessed card if I or the guesser has it or it's in the known solution
         guess = self.remove_known_from_guess(guesser, guess)
@@ -344,6 +373,8 @@ class game():
             for card in guess:
                 self.not_it_but_not_sure_who.append(card)
                 self.not_it_but_not_sure_who = list(set(self.not_it_but_not_sure_who))
+                # Update detective notebook
+                self.update_detective_notebook(card, "NO")
             print(self.not_it_but_not_sure_who)
 
 
