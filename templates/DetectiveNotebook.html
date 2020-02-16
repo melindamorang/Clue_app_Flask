@@ -1,10 +1,7 @@
 {% block detectiveNotebook %}
-    <h1>Detective notebook</h1>
-    <h2>Suspects</h2>
-    <table>
-        <tr>
-            <th>Suspect</th>
-            <th>Player</th>
+    <table class="DetectiveNotebookTable">
+        <tr class="CardTypeHeader">
+            <td colspan="2">Suspects</td>
         </tr>
         {% for suspect, player in suspect_dict.items() %}
         <tr>
@@ -12,12 +9,8 @@
                 <td> {{ player }} </td>
         </tr>
         {% endfor %}
-    </table>
-    <h2>Weapons</h2>
-    <table>
-        <tr>
-        <th>Weapon</th>
-        <th>Player</th>
+        <tr class="CardTypeHeader">
+            <td colspan="2">Weapons</td>
         </tr>
         {% for weapon, player in weapon_dict.items() %}
         <tr>
@@ -25,12 +18,8 @@
                 <td> {{ player }} </td>
         </tr>
         {% endfor %}
-    </table>
-    <h2>Rooms</h2>
-    <table>
-        <tr>
-        <th>Room</th>
-        <th>Player</th>
+        <tr class="CardTypeHeader">
+            <td colspan="2">Rooms</td>
         </tr>
         {% for room, player in room_dict.items() %}
         <tr>

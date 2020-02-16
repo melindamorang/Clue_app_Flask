@@ -1,0 +1,25 @@
+:root {
+  --main-dark-accent: #5E2F18;
+}
+
+body {
+  color: var(--main-dark-accent);
+  background-color: #DBC3B7;
+}
+
+table.DetectiveNotebookTable {
+  width: 100%;
+}
+
+table.DetectiveNotebookTable td, th {
+  
+  border: 2px solid var(--main-dark-accent);
+  background-color: white;
+  font-style: italic;
+}
+
+table.DetectiveNotebookTable tr.CardTypeHeader td {
+  background-color: var(--main-dark-accent);
+  color: white;
+  font-weight: bold;
+}
