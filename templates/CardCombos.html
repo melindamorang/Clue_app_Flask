@@ -1,24 +1,24 @@
 {% block combos %}
 
-<h2>Suspect</h2>
+Suspect<br />
 <select name="guessed_suspect">
     {% for suspect in suspects %}
     <option value="{{ suspect }}">{{ suspect }}</option>
     {% endfor %}
-</select>
+</select><br />
 
-<h2>Weapon</h2>
+Weapon<br />
 <select name="guessed_weapon">
     {% for weapon in weapons %}
     <option value="{{ weapon }}">{{ weapon }}</option>
     {% endfor %}
-</select>
+</select><br />
 
-<h2>Room</h2>
+Room<br />
 <select name="guessed_room">
     {% for room in rooms %}
     <option value="{{ room }}">{{ room }}</option>
     {% endfor %}
-</select>
+</select><br />
 
 {% endblock %}

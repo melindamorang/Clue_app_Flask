@@ -5,8 +5,12 @@
         </tr>
         {% for suspect, player in suspect_dict.items() %}
         <tr>
-                <td> {{ suspect }} </td>
+            <td> {{ suspect }} </td>
+            {% if player == "SOLUTION" %}
+                <td class="Solution"> {{ player }} </td>
+            {% else %}
                 <td> {{ player }} </td>
+            {% endif %}
         </tr>
         {% endfor %}
         <tr class="CardTypeHeader">
