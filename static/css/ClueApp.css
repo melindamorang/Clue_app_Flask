@@ -53,3 +53,7 @@ a, a:visited, a:active{
 select {
   color: var(--main-dark-accent);
 }
+
+.form-control {
+  color: var(--main-dark-accent);
+}

@@ -1,20 +1,42 @@
 {% extends "layout.html" %}
 
 {% block body %}
+
+<div class="col-md-12"></div>
     <form action="{{ url_for('enterCards') }}" method="post">
+        
         <h1>Enter your cards</h1>
-        <h2>Suspects</h2>
-        {% for suspect in suspects %}
-            <input type="checkbox" value="{{ suspect }}" name="suspects">{{ suspect }}<br>
-        {% endfor %}
-        <h2>Weapons</h2>
-        {% for weapon in weapons %}
-            <input type="checkbox" value="{{ weapon }}" name="weapons">{{ weapon }}<br>
-        {% endfor %}
-        <h2>Rooms</h2>
-        {% for room in rooms %}
-            <input type="checkbox" value="{{ room }}" name="rooms">{{ room }}<br>
-        {% endfor %}
+
+        <table class="DetectiveNotebookTable">
+            <tr class="CardTypeHeader">
+                <td colspan="2">Suspects</td>
+            </tr>
+            {% for suspect in suspects %}
+            <tr>
+                <td><input type="checkbox" class="form-check" value="{{ suspect }}" name="suspects"></td>
+                <td> {{ suspect }} </td>
+            </tr>
+            {% endfor %}
+            <tr class="CardTypeHeader">
+                <td colspan="2">Weapons</td>
+            </tr>
+            {% for weapon in weapons %}
+            <tr>
+                <td><input type="checkbox" class="form-check" value="{{ weapon }}" name="weapons"></td>
+                <td> {{ weapon }} </td>
+            </tr>
+            {% endfor %}
+            <tr class="CardTypeHeader">
+                <td colspan="2">Rooms</td>
+            </tr>
+            {% for room in rooms %}
+            <tr>
+                <td><input type="checkbox" class="form-check" value="{{ room }}" name="rooms"></td>
+                <td> {{ room }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+
         <h1>Enter other players</h1>
         <table>
             <tr>
@@ -23,11 +45,12 @@
             </tr>
             {% for i in range(2, 11) %}
             <tr>
-                <td><input type="text" name="Player_{{ i }}"></td>
-                <td><input type="number" step="1" name="num_cards_{{ i }}"></td>
+                <td><input type="text" class="form-control" name="Player_{{ i }}"></td>
+                <td><input type="number" class="form-control" step="1" name="num_cards_{{ i }}"></td>
             </tr>
             {% endfor %}
         </table>
-        <input type="submit" value="Submit">
+        {% include "submit.html" %}
     </form>
+</div>
 {% endblock %}
