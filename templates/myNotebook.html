@@ -7,12 +7,10 @@
     </div>
 
     <div class="col-md-8">
-        <h1>Stuff to do</h1>
-        <ul>
-            <li><a href="{{ url_for('snoop') }}">Snoop</a></li>
-            <li><a href="{{ url_for('guess') }}">Guess</a></li>
-            <li><a href="{{ url_for('otherPlayerGuess') }}">Enter another player's guess</a></li>
-        </ul>
+        <h1>Actions</h1>
+        <a href="{{ url_for('snoop') }}" class="btn btn-default">Snoop</a><br />
+        <a href="{{ url_for('guess') }}" class="btn btn-default">Guess</a><br />
+        <a href="{{ url_for('otherPlayerGuess') }}" class="btn btn-default">Enter another player's guess</a>
 
     {% include "log.html" %}
     </div>
