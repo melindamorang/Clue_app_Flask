@@ -2,14 +2,18 @@
 
 {% block body %}
 
-<h1>Make a guess</h1>
-<form action="{{ url_for('enterGuess') }}" method="post">
-    {% include "CardCombos.html" %}
-    <input type="submit" value="Submit">
-</form>
+<div class="col-md-4">
+    <h1>Make a guess</h1>
+    <form action="{{ url_for('enterGuess') }}" method="post">
+        {% include "CardCombos.html" %}
+        <input type="submit" value="Submit">
+    </form>
 
-{% include "cancel.html" %}
+    {% include "cancel.html" %}
+</div>
 
-{% include "DetectiveNotebook.html" %}
+<div class="col-md-4">
+    {% include "DetectiveNotebook.html" %}
+</div>
     
 {% endblock %}

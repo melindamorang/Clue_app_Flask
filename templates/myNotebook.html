@@ -2,15 +2,19 @@
 
 {% block body %}
     
+    <div class="col-md-4">
     {% include "DetectiveNotebook.html" %}
+    </div>
 
-    <h1>Stuff to do</h1>
-    <ul>
-        <li><a href="{{ url_for('snoop') }}">Snoop</a></li>
-        <li><a href="{{ url_for('guess') }}">Guess</a></li>
-        <li><a href="{{ url_for('otherPlayerGuess') }}">Enter another player's guess</a></li>
-    </ul>
+    <div class="col-md-8">
+        <h1>Stuff to do</h1>
+        <ul>
+            <li><a href="{{ url_for('snoop') }}">Snoop</a></li>
+            <li><a href="{{ url_for('guess') }}">Guess</a></li>
+            <li><a href="{{ url_for('otherPlayerGuess') }}">Enter another player's guess</a></li>
+        </ul>
 
     {% include "log.html" %}
+    </div>
 
 {% endblock %}
