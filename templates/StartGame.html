@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="col-md-12"></div>
+    <form action="{{ url_for('enterCards') }}" method="post">
+        
+        <h1>Enter your cards</h1>
+
+        <table class="DetectiveNotebookTable">
+            <tr class="CardTypeHeader">
+                <td colspan="2">Suspects</td>
+            </tr>
+            {% for suspect in suspects %}
+            <tr>
+                <td><input type="checkbox" class="form-check" value="{{ suspect }}" name="suspects"></td>
+                <td> {{ suspect }} </td>
+            </tr>
+            {% endfor %}
+            <tr class="CardTypeHeader">
+                <td colspan="2">Weapons</td>
+            </tr>
+            {% for weapon in weapons %}
+            <tr>
+                <td><input type="checkbox" class="form-check" value="{{ weapon }}" name="weapons"></td>
+                <td> {{ weapon }} </td>
+            </tr>
+            {% endfor %}
+            <tr class="CardTypeHeader">
+                <td colspan="2">Rooms</td>
+            </tr>
+            {% for room in rooms %}
+            <tr>
+                <td><input type="checkbox" class="form-check" value="{{ room }}" name="rooms"></td>
+                <td> {{ room }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h1>Enter other players</h1>
+        <table>
+            <tr>
+                <th>Player name</th>
+                <th>Number of cards</th>
+            </tr>
+            {% for i in range(2, 11) %}
+            <tr>
+                <td><input type="text" class="form-control" name="Player_{{ i }}"></td>
+                <td><input type="number" class="form-control" step="1" name="num_cards_{{ i }}"></td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% include "submit.html" %}
+    </form>
+</div>
+{% endblock %}
