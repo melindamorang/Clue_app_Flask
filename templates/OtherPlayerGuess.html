@@ -1,12 +1,16 @@
 {% extends "layout.html" %}
 
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/OtherPlayerGuess.js') }}"></script>
+{% endblock %}
+
 {% block body %}
 
 <div class="col-md-12">
     <h1>Enter another player's guess</h1>
     <form action="{{ url_for('enterOtherPlayerGuess') }}" method="post">
         Which player guessed?<br />
-        <select name="guesser">
+        <select name="guesser" id="guesserCombo" onchange="hideGuesserInDisprovers(this);">
             {% for player in players %}
             <option value="{{ player }}">{{ player }}</option>
             {% endfor %}
@@ -16,9 +20,11 @@
         {% include "CardCombos.html" %}
 
         Which players disproved?<br />
+        <div id="Disprovers">
         {% for player in players %}
-            <input type="checkbox" value="{{ player }}" name="disprovers">{{ player }}<br>
+            <div class="disproverCheckbox" id="{{ player }}Checkbox" ><input type="checkbox" value="{{ player }}" name="disprovers">{{ player }}<br></div>
         {% endfor %}
+        </div>
         
         {% include "submit.html" %}
     </form>
