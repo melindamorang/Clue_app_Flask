@@ -29,6 +29,12 @@ function validate(){
         document.getElementById("validation").innerHTML = text;
         return false;
     }
+    // Make sure I didn't name a player "Me".
+    if (otherPlayerNames.includes("Me")){
+        var text = `You cannot name another player "Me".`
+        document.getElementById("validation").innerHTML = text;
+        return false;
+    }
 
     // Validate number of cards.
     // There are 30 cards in the game, 3 of which are the actual solution.
@@ -49,19 +55,35 @@ function validate(){
     }
 
     // Count the number of other players' cards.
-    var otherPlayerCards = 0;
+    var otherPlayerCardsCount = 0;
+    var numCards = [myCards];
     var numCardBoxes = document.getElementsByClassName("num_cards");
     for(var i=0, len=numCardBoxes.length; i<len; i++){
-        if (numCardBoxes[i].value.length != 0) otherPlayerCards += parseInt(numCardBoxes[i].value);
+        if (numCardBoxes[i].value.length != 0) {
+            var num = parseInt(numCardBoxes[i].value);
+            otherPlayerCardsCount += num;
+            numCards.push(num)
+        }
     }
 
-    var cardsInPlay = myCards + otherPlayerCards;
+    var cardsInPlay = myCards + otherPlayerCardsCount;
 
     // Fail if the number of cards in play is less than the total in the game.
     if (cardsInPlay !== totalCards) {
       var text = `The total number of cards must be ${totalCards}.`
       document.getElementById("validation").innerHTML = text;
       return false;
+    }
+
+    // Make sure the cards are evenly distributed
+    var numPlayers = numCards.length;
+    var allowedNumCards = [Math.floor(totalCards / numPlayers), Math.ceil(totalCards / numPlayers)];
+    for(var i=0, len=numPlayers; i<len; i++){
+        if (!allowedNumCards.includes(numCards[i])){
+            var text = `The number of cards is not evenly distributed.`
+            document.getElementById("validation").innerHTML = text;
+            return false;
+        }
     }
 
 };
