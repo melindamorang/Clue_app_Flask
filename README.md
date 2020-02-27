@@ -2,7 +2,7 @@ Clue_app_Flask
 
 ## What is it?
 
-ClueLogic is a web app to accompany the game Clue: Master Detective. It uses python code to track players' guesses and derive useful information from them, helping you figure out whodunnit, where, and with what faster than the other players.
+ClueLogic is a web app to accompany the board game Clue: Master Detective. It uses python code to track players' guesses and derive useful information from them, helping you figure out whodunnit, where, and with what faster than the other players.
 
 Yes, this is sort of a cheating app. Your Clue: Master Detective games may not be as fun if you actually use this app. That's okay because it's not really the point. This app is a personal spare-time project to help me learn some modern web development techniques and exercise my new skills.
 
