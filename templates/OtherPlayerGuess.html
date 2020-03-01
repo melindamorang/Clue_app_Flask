@@ -9,25 +9,51 @@
 <div class="col-md-4">
     <h1>Enter another player's guess</h1>
     <form action="{{ url_for('enterOtherPlayerGuess') }}" method="post">
+        <div id="Guesser">
         Which player guessed?<br />
-        <select name="guesser" id="guesserCombo" required onchange="hideGuesserInDisprovers(this);">
+        <select name="guesser" id="guesserCombo" required onchange="showHideGuess(this); hideGuesserInDisprovers(this);">
             <option value="" selected disabled hidden>Select one...</option>
             {% for player in players %}
             <option value="{{ player }}">{{ player }}</option>
             {% endfor %}
         </select><br />
+        </div>
 
+        <div id="Guess">
         What was the guess?<br />
-        {% include "CardCombos.html" %}
+        Suspect<br />
+        <select name="guessed_suspect" class="guess" required onchange="showHideDisprovers(this);">
+            <option value="" selected disabled hidden>Select one...</option>
+            {% for suspect in suspects %}
+            <option value="{{ suspect }}">{{ suspect }}</option>
+            {% endfor %}
+        </select><br />
 
-        Which players disproved?<br />
+        Weapon<br />
+        <select name="guessed_weapon" class="guess" required onchange="showHideDisprovers(this);">
+            <option value="" selected disabled hidden>Select one...</option>
+            {% for weapon in weapons %}
+            <option value="{{ weapon }}">{{ weapon }}</option>
+            {% endfor %}
+        </select><br />
+
+        Room<br />
+        <select name="guessed_room" class="guess" required onchange="showHideDisprovers(this);">
+            <option value="" selected disabled hidden>Select one...</option>
+            {% for room in rooms %}
+            <option value="{{ room }}">{{ room }}</option>
+            {% endfor %}
+        </select><br />
+        </div>
+
         <div id="Disprovers">
+        Which players disproved?<br />
         {% for player in players %}
             <div class="disproverCheckbox" id="{{ player }}Checkbox" ><input type="checkbox" value="{{ player }}" name="disprovers">{{ player }}<br></div>
         {% endfor %}
-        </div>
-        
+
         {% include "submit.html" %}
+        </div>
     </form>
 
     {% include "cancel.html" %}
