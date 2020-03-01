@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/myNotebook.js') }}"></script>
+{% endblock %}
+
 {% block body %}
     
     <div class="col-md-4">
@@ -14,7 +18,8 @@
 
     {% include "log.html" %}
 
-    <br /><a href="{{ url_for('endGame') }}">End game</a>
+    <a href="javascript:;" onclick="copyGameLogToClipboard();">Copy game log to clipboard</a><br />
+    <a href="{{ url_for('endGame') }}">End game</a>
     </div>
 
 {% endblock %}
