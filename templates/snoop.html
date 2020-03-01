@@ -10,6 +10,7 @@
         <br />
         Which card did you see?<br />
         <select name="card">
+            <option value="" selected disabled hidden>Select one...</option>
             <optgroup label="Suspects">
                 {% for suspect in suspects %}
                 <option value="{{ suspect }}">{{ suspect }}</option>

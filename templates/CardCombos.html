@@ -2,6 +2,7 @@
 
 Suspect<br />
 <select name="guessed_suspect">
+    <option value="" selected disabled hidden>Select one...</option>
     {% for suspect in suspects %}
     <option value="{{ suspect }}">{{ suspect }}</option>
     {% endfor %}
@@ -9,6 +10,7 @@ Suspect<br />
 
 Weapon<br />
 <select name="guessed_weapon">
+    <option value="" selected disabled hidden>Select one...</option>
     {% for weapon in weapons %}
     <option value="{{ weapon }}">{{ weapon }}</option>
     {% endfor %}
@@ -16,6 +18,7 @@ Weapon<br />
 
 Room<br />
 <select name="guessed_room">
+    <option value="" selected disabled hidden>Select one...</option>
     {% for room in rooms %}
     <option value="{{ room }}">{{ room }}</option>
     {% endfor %}
