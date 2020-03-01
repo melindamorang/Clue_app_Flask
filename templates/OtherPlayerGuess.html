@@ -10,7 +10,7 @@
     <h1>Enter another player's guess</h1>
     <form action="{{ url_for('enterOtherPlayerGuess') }}" method="post">
         Which player guessed?<br />
-        <select name="guesser" id="guesserCombo" onchange="hideGuesserInDisprovers(this);">
+        <select name="guesser" id="guesserCombo" required onchange="hideGuesserInDisprovers(this);">
             <option value="" selected disabled hidden>Select one...</option>
             {% for player in players %}
             <option value="{{ player }}">{{ player }}</option>

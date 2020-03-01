@@ -5,7 +5,7 @@
 <h1>Who disproved you?</h1>
 <form action="{{ url_for('enterDisprove') }}" method="post">
     Suspect: <input type="text" name="guessed_suspect" value="{{ guessed_suspect }}" readonly><br />
-    <select name="disprover_suspect">
+    <select name="disprover_suspect" required>
         <option value="" selected disabled hidden>Select one...</option>
         <option value="">No one</option>
         {% for player in players %}
@@ -14,7 +14,7 @@
     </select>
     <br />
     Weapon: <input type="text" name="guessed_weapon" value="{{ guessed_weapon }}" readonly><br />
-    <select name="disprover_weapon">
+    <select name="disprover_weapon" required>
         <option value="" selected disabled hidden>Select one...</option>
         <option value="">No one</option>
         {% for player in players %}
@@ -23,7 +23,7 @@
     </select>
     <br />
     Room: <input type="text" name="guessed_room" value="{{ guessed_room }}" readonly><br />
-    <select name="disprover_room">
+    <select name="disprover_room" required>
         <option value="" selected disabled hidden>Select one...</option>
         <option value="">No one</option>
         {% for player in players %}

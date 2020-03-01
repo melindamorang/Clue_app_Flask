@@ -1,6 +1,6 @@
 {% block playerCombo %}
 
-<select name="player">
+<select name="player" required>
     <option value="" selected disabled hidden>Select one...</option>
     {% for player in players %}
     <option value="{{ player }}">{{ player }}</option>

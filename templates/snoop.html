@@ -9,7 +9,7 @@
         {% include "PlayerCombo.html" %}
         <br />
         Which card did you see?<br />
-        <select name="card">
+        <select name="card" required>
             <option value="" selected disabled hidden>Select one...</option>
             <optgroup label="Suspects">
                 {% for suspect in suspects %}
