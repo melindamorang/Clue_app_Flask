@@ -104,11 +104,13 @@ class game():
         my_cards = my_suspects + my_weapons + my_rooms
         not_my_cards = [card for card in cards["suspects"] + cards["weapons"] + cards["rooms"] if card not in my_cards]
         self.players["Me"] = self.player("Me", len(my_cards), not_my_cards, my_cards)
-        self.add_to_log("Initialized 'Me'.")
+        self.add_to_log("My suspects: " + ", ".join(my_suspects))
+        self.add_to_log("My weapons: " + ", ".join(my_weapons))
+        self.add_to_log("My rooms: " + ", ".join(my_rooms))
         # Initialize other players
         for player_info in other_players:
             self.players[player_info[0]] = self.player(player_info[0], player_info[1], [card for card in my_cards])
-            self.add_to_log(f"Initialized '{player_info[0]}'.")
+            self.add_to_log(f"Initialized '{player_info[0]}' with {player_info[1]} cards.")
         # Update the detective notebook with my cards
         for suspect in my_suspects:
             self.update_detective_notebook(suspect, "Me", "suspects")
