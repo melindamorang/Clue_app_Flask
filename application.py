@@ -26,6 +26,11 @@ def startGame():
         rooms=clueLogic.cards["rooms"]
         )
 
+@app.route('/endGame')
+def endGame():
+    """Verify that you really wanted to end the game."""
+    return render_template("endGame.html")
+
 @app.route('/renderMyNotebook')
 def renderMyNotebook():
     """Render the detective notebook main game page."""
