@@ -19,7 +19,11 @@
         {% for weapon, player in weapon_dict.items() %}
         <tr>
                 <td> {{ weapon }} </td>
-                <td> {{ player }} </td>
+                {% if player == "SOLUTION" %}
+                    <td class="Solution"> {{ player }} </td>
+                {% else %}
+                    <td> {{ player }} </td>
+                {% endif %}
         </tr>
         {% endfor %}
         <tr class="CardTypeHeader">
@@ -28,7 +32,11 @@
         {% for room, player in room_dict.items() %}
         <tr>
                 <td> {{ room }} </td>
-                <td> {{ player }} </td>
+                {% if player == "SOLUTION" %}
+                    <td class="Solution"> {{ player }} </td>
+                {% else %}
+                    <td> {{ player }} </td>
+                {% endif %}
         </tr>
         {% endfor %}
     </table>
