@@ -132,6 +132,7 @@ class game():
                 self.add_to_log(f"{card} is in actual solution!")
                 self.detective_notebook[card_type][unknown[0]] = "SOLUTION"
                 self.actual_solution.append(unknown[0])
+                self.actual_solution = list(set(self.actual_solution))
                 for player in self.players:
                     self.enter_not_has(player, unknown[0])
 
@@ -194,6 +195,7 @@ class game():
         # Check if no one has this card.  If so, we now know that this is the actual solution.
         if self.is_actual_solution(card):
             self.actual_solution.append(card)
+            self.actual_solution = list(set(self.actual_solution))
             self.add_to_log(f"{card} is in actual solution!")
             self.update_detective_notebook(card, "SOLUTION")
         # Go through prior guesses where we know they had at least one of the cards
@@ -375,13 +377,12 @@ class game():
         # of remaining disprovers. We know none of them is the correct
         # solution, although we don't know specifically who has what.
         if len(disprovers) == len(guess):
-            print("Entering guess in not_it_but_not_sure_who", guess)
+            print("Although we don't know who has these cards, we know they are not the correct solution:", guess)
             for card in guess:
                 self.not_it_but_not_sure_who.append(card)
                 self.not_it_but_not_sure_who = list(set(self.not_it_but_not_sure_who))
                 # Update detective notebook
                 self.update_detective_notebook(card, "NO")
-            print(self.not_it_but_not_sure_who)
 
 
 if __name__ == '__main__':
