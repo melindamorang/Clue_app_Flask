@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<div class="col-md-12">
+<div class="col-md-4">
     <h1>Enter another player's guess</h1>
     <form action="{{ url_for('enterOtherPlayerGuess') }}" method="post">
         Which player guessed?<br />
@@ -30,6 +30,10 @@
     </form>
 
     {% include "cancel.html" %}
+</div>
+
+<div class="col-md-4">
+    {% include "DetectiveNotebook.html" %}
 </div>
 
 {% endblock %}

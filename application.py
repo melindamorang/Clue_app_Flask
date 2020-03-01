@@ -137,7 +137,10 @@ def otherPlayerGuess():
         players=other_players,
         suspects=clueLogic.cards["suspects"],
         weapons=clueLogic.cards["weapons"],
-        rooms=clueLogic.cards["rooms"]
+        rooms=clueLogic.cards["rooms"],
+        suspect_dict=session["game"].detective_notebook["suspects"],
+        weapon_dict=session["game"].detective_notebook["weapons"],
+        room_dict=session["game"].detective_notebook["rooms"]
         )
 
 @app.route('/enterOtherPlayerGuess', methods=["POST"])
