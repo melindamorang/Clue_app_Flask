@@ -110,6 +110,7 @@ class RandomGame():
         # Give the player an 80% chance of making a guess
         if random.random() <= 0.8:
             self.other_player_guess(player)
+        print("Current solution:", self.game.actual_solution)
         return self.is_game_finished()
 
     def my_turn(self):
@@ -117,9 +118,11 @@ class RandomGame():
         # Give me a 25% chance of snooping
         if random.random() <= 0.25:
             self.snoop(random.choice(list(self.players.keys())))
+        print("Current solution:", self.game.actual_solution)
         # Give me an 80% chance of making a guess
         if random.random() <= 0.8:
             self.guess()
+        print("Current solution:", self.game.actual_solution)
         return self.is_game_finished()
 
     def is_game_finished(self):
