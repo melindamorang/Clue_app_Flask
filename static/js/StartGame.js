@@ -35,6 +35,12 @@ function validate(){
         document.getElementById("validation").innerHTML = text;
         return false;
     }
+    // Make sure I didn't name a player "NO".
+    if (otherPlayerNames.includes("NO")){
+        var text = `You cannot name another player "NO".`
+        document.getElementById("validation").innerHTML = text;
+        return false;
+    }
 
     // Validate number of cards.
     // There are 30 cards in the game, 3 of which are the actual solution.
