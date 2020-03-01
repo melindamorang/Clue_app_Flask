@@ -85,6 +85,7 @@ def enterSnoop():
 
 @app.route('/guess')
 def guess():
+    other_players = [player for player in session["game"].players if player != "Me"]
     return render_template(
         "guess.html",
         suspects=clueLogic.cards["suspects"],
@@ -92,7 +93,8 @@ def guess():
         rooms=clueLogic.cards["rooms"],
         suspect_dict=session["game"].detective_notebook["suspects"],
         weapon_dict=session["game"].detective_notebook["weapons"],
-        room_dict=session["game"].detective_notebook["rooms"]
+        room_dict=session["game"].detective_notebook["rooms"],
+        players=other_players
         )
 
 @app.route('/enterGuess', methods=["POST"])
@@ -101,26 +103,11 @@ def enterGuess():
     guessed_suspect = request.form.get("guessed_suspect")
     guessed_weapon = request.form.get("guessed_weapon")
     guessed_room = request.form.get("guessed_room")
-    other_players = [player for player in session["game"].players if player != "Me"]
-    # Render page where you can enter disproval
-    return render_template(
-        "DisproveMyGuess.html",
-        guessed_suspect=guessed_suspect,
-        guessed_weapon=guessed_weapon,
-        guessed_room=guessed_room,
-        players=other_players
-        )
-
-@app.route('/enterDisprove', methods=["POST"])
-def enterDisprove():
-    # Get my entered guess from entry form
-    guessed_suspect = request.form.get("guessed_suspect")
-    guessed_weapon = request.form.get("guessed_weapon")
-    guessed_room = request.form.get("guessed_room")
     disprover_suspect = request.form.get("disprover_suspect")
     disprover_weapon = request.form.get("disprover_weapon")
     disprover_room = request.form.get("disprover_room")
 
+    # Enter disproval
     session["game"].enter_disproval_of_my_guess(
         guessed_suspect, guessed_weapon, guessed_room,
         disprover_suspect, disprover_weapon, disprover_room

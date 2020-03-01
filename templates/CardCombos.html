@@ -1,7 +1,7 @@
 {% block combos %}
 
 Suspect<br />
-<select name="guessed_suspect" required>
+<select name="guessed_suspect" required class="guess" id="guessedSuspect" required onchange="showHideDisprovers(this);">
     <option value="" selected disabled hidden>Select one...</option>
     {% for suspect in suspects %}
     <option value="{{ suspect }}">{{ suspect }}</option>
@@ -9,7 +9,7 @@ Suspect<br />
 </select><br />
 
 Weapon<br />
-<select name="guessed_weapon" required>
+<select name="guessed_weapon" required class="guess" id="guessedWeapon" required onchange="showHideDisprovers(this);">
     <option value="" selected disabled hidden>Select one...</option>
     {% for weapon in weapons %}
     <option value="{{ weapon }}">{{ weapon }}</option>
@@ -17,7 +17,7 @@ Weapon<br />
 </select><br />
 
 Room<br />
-<select name="guessed_room" required>
+<select name="guessed_room" required class="guess" id="guessedRoom" required onchange="showHideDisprovers(this);">
     <option value="" selected disabled hidden>Select one...</option>
     {% for room in rooms %}
     <option value="{{ room }}">{{ room }}</option>
