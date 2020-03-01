@@ -137,7 +137,11 @@ class game():
         """Update the detective notebook with new information."""
         if not card_type:
             card_type = get_card_type_key(card)
-        self.detective_notebook[card_type][card] = owner
+        if owner == "NO":
+            if not self.detective_notebook[card_type][card]:
+                self.detective_notebook[card_type][card] = owner
+        else:
+            self.detective_notebook[card_type][card] = owner
         if owner == "SOLUTION":
             # Update all other items in detective notebook with a mark indicating they aren't the solution
             for cd in cards[card_type]:

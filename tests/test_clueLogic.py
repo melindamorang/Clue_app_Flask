@@ -302,6 +302,42 @@ class TestClueLogic(unittest.TestCase):
         # not_it_but_not_sure_who should be updated
         self.assertCountEqual([guessed_weapon, guessed_room], game.not_it_but_not_sure_who)
 
+    def test_update_detective_notebook(self):
+        """Test update_detective_notebook"""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        # Initialize detective notebook
+        expected_detective_notebook = {
+            "suspects": {suspect: "" for suspect in clueLogic.cards["suspects"]},
+            "weapons": {weapon: "" for weapon in clueLogic.cards["weapons"]},
+            "rooms": {room: "" for room in clueLogic.cards["rooms"]}
+        }
+        for suspect in self.my_suspects:
+            expected_detective_notebook["suspects"][suspect] = "Me"
+        for weapon in self.my_weapons:
+            expected_detective_notebook["weapons"][weapon] = "Me"
+        for room in self.my_rooms:
+            expected_detective_notebook["rooms"][room] = "Me"
+        # Update detective notebook with specific card for specific player
+        game.update_detective_notebook("Mrs. Peacock", "Susan")
+        expected_detective_notebook["suspects"]["Mrs. Peacock"] = "Susan"
+        self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
+        # Update detective notebook with "NO"
+        game.update_detective_notebook("Col. Mustard", "NO")
+        expected_detective_notebook["suspects"]["Col. Mustard"] = "NO"
+        self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
+        # Update detective notebook with "NO" when we already know who has that card
+        game.update_detective_notebook("Mrs. Peacock", "NO")
+        self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
+        # Update detective notebook with "SOLUTION"
+        game.update_detective_notebook("Sgt. Gray", "SOLUTION")
+        expected_detective_notebook["suspects"]["Sgt. Gray"] = "SOLUTION"
+        for card in expected_detective_notebook["suspects"]:
+            if not expected_detective_notebook["suspects"][card]:
+                expected_detective_notebook["suspects"][card] = "NO"
+        self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
+
 
 if __name__ == '__main__':
     unittest.main()
