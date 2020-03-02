@@ -136,6 +136,11 @@ class RandomGame():
                 solution_correct = False
             else:
                 print("AWESOME! CORRECT SOLUTION DETERMINED.")
+            print("Detective notebook:")
+            for cat in clueLogic.cards:
+                print(f"--{cat}--")
+                for card in clueLogic.cards[cat]:
+                    print("  ", card, self.game.detective_notebook[cat][card])
             return True, solution_correct
         return False, False
 
