@@ -7,9 +7,9 @@ function populateText() {
     guessedSuspect = document.getElementById("guessedSuspect").value;
     guessedWeapon = document.getElementById("guessedWeapon").value;
     guessedRoom = document.getElementById("guessedRoom").value;
-    document.getElementById("disproverSuspect").innerHTML = guessedSuspect;
-    document.getElementById("disproverWeapon").innerHTML = guessedWeapon;
-    document.getElementById("disproverRoom").innerHTML = guessedRoom;
+    document.getElementById("disproverSuspectText").innerHTML = guessedSuspect;
+    document.getElementById("disproverWeaponText").innerHTML = guessedWeapon;
+    document.getElementById("disproverRoomText").innerHTML = guessedRoom;
 }
 
 function showHideDisprovers() {
@@ -30,3 +30,21 @@ function showHideElement(element, shouldShow) {
     if (shouldShow) element.style.display = "inline";
     else element.style.display = "none";
 }
+
+function validate(){
+    // Make sure the user hasn't selected the same disprover for two different cards.
+    disproverSelects = document.getElementsByClassName("disprovers")
+    disprovers = []
+    for(var i=0, len=disproverSelects.length; i<len; i++){
+        if (disproverSelects[i].value !== "") {
+            disprovers.push(disproverSelects[i].value)
+        };
+    };
+    // Return false if the disprovers array has duplicates
+    if ((new Set(disprovers)).size !== disprovers.length) {
+        var text = `You can't choose the same disprover twice.`
+        document.getElementById("validation").innerHTML = text;
+        return false;
+    };
+
+};

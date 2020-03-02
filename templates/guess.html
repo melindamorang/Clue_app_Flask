@@ -8,13 +8,13 @@
 
 <div class="col-md-8">
     <h1>Make a guess</h1>
-    <form action="{{ url_for('enterGuess') }}" method="post">
+    <form action="{{ url_for('enterGuess') }}" method="post" onsubmit="return validate()">
         What was the guess?<br />
         {% include "CardCombos.html" %}
 
         <div id="Disprovers">
-            Who disproved <span id="disproverSuspect">suspect</span>?<br />
-            <select name="disprover_suspect" required>
+            Who disproved <span id="disproverSuspectText">suspect</span>?<br />
+            <select name="disprover_suspect" class="disprovers" required>
                 <option value="" selected disabled hidden>Select one...</option>
                 <option value="">No one</option>
                 {% for player in players %}
@@ -22,8 +22,8 @@
                 {% endfor %}
             </select><br />
 
-            Who disproved <span id="disproverWeapon">weapon</span>?<br />
-            <select name="disprover_weapon" required>
+            Who disproved <span id="disproverWeaponText">weapon</span>?<br />
+            <select name="disprover_weapon" class="disprovers" required>
                 <option value="" selected disabled hidden>Select one...</option>
                 <option value="">No one</option>
                 {% for player in players %}
@@ -31,8 +31,8 @@
                 {% endfor %}
             </select><br />
 
-            Who disproved <span id="disproverRoom">room</span>?<br />
-            <select name="disprover_room" required>
+            Who disproved <span id="disproverRoomText">room</span>?<br />
+            <select name="disprover_room" class="disprovers" required>
                 <option value="" selected disabled hidden>Select one...</option>
                 <option value="">No one</option>
                 {% for player in players %}
