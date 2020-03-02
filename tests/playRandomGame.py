@@ -127,30 +127,33 @@ class RandomGame():
 
     def is_game_finished(self):
         """Determine if the game is finished based on whether the full solution is known."""
+        solution_correct = True
         if len(self.game.actual_solution) == 3:
             print("Game is finished. Determined solution:", self.game.actual_solution)
             print("Correct solution was:", self.actual_solution)
             if sorted(self.game.actual_solution) != sorted(self.actual_solution):
                 print("OH NO!! THE SOLUTION WAS INCORRECT")
+                solution_correct = False
             else:
                 print("AWESOME! CORRECT SOLUTION DETERMINED.")
-            return True
-        return False
+            return True, solution_correct
+        return False, False
 
 
 def main():
-    seed = 2436987195199119272 #random.randrange(sys.maxsize)
+    seed = random.randrange(sys.maxsize)
     randomGame = RandomGame(seed)
     # Get players and choose an arbitrary turn order to go in
     players = list(randomGame.players.keys()) + ["Me"]
     random.shuffle(players)
     game_finished = False
+    solution_correct = False
     while not game_finished:
         for player in players:
             if player == "Me":
-                game_finished = randomGame.my_turn()
+                game_finished, solution_correct = randomGame.my_turn()
             else:
-                game_finished = randomGame.other_player_turn(player)
+                game_finished, solution_correct = randomGame.other_player_turn(player)
             if game_finished:
                 break
 
