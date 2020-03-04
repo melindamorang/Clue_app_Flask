@@ -8,6 +8,8 @@ class TestClueLogic(unittest.TestCase):
 
     def setUp(self):
 
+        self.maxDiff = None
+
         self.sample_game = {
             "Me": [
                 "Mme Rose",
@@ -337,6 +339,48 @@ class TestClueLogic(unittest.TestCase):
             if not expected_detective_notebook["suspects"][card]:
                 expected_detective_notebook["suspects"][card] = "NO"
         self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
+
+    def test_check_for_solution_by_elimination(self):
+        """Test check_for_solution_by_elimination"""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        # Initialize detective notebook so that there is only one remaining suspect
+        game.detective_notebook["suspects"]["Mrs. Peacock"] = "Susan"
+        game.detective_notebook["suspects"]["Col. Mustard"] = "Susan"
+        game.detective_notebook["suspects"]["Mrs. White"] = "Susan"
+        game.detective_notebook["suspects"]["Miss Peach"] = "Susan"
+        game.detective_notebook["suspects"]["Miss Scarlet"] = "Andy"
+        game.detective_notebook["suspects"]["M. Brunette"] = "Sarah"
+        game.detective_notebook["suspects"]["Mr. Green"] = "Sarah"
+        # Run the method and make sure the the remaining Sgt. Gray is tagged with SOLUTION
+        game.check_for_solution_by_elimination()
+        expected_detective_notebook = {
+            "suspects": {suspect: "" for suspect in clueLogic.cards["suspects"]},
+            "weapons": {weapon: "" for weapon in clueLogic.cards["weapons"]},
+            "rooms": {room: "" for room in clueLogic.cards["rooms"]}
+        }
+        for suspect in self.my_suspects:
+            expected_detective_notebook["suspects"][suspect] = "Me"
+        for weapon in self.my_weapons:
+            expected_detective_notebook["weapons"][weapon] = "Me"
+        for room in self.my_rooms:
+            expected_detective_notebook["rooms"][room] = "Me"
+        expected_detective_notebook["suspects"]["Mrs. Peacock"] = "Susan"
+        expected_detective_notebook["suspects"]["Col. Mustard"] = "Susan"
+        expected_detective_notebook["suspects"]["Mrs. White"] = "Susan"
+        expected_detective_notebook["suspects"]["Miss Peach"] = "Susan"
+        expected_detective_notebook["suspects"]["Miss Scarlet"] = "Andy"
+        expected_detective_notebook["suspects"]["M. Brunette"] = "Sarah"
+        expected_detective_notebook["suspects"]["Mr. Green"] = "Sarah"
+        expected_detective_notebook["suspects"]["Sgt. Gray"] = "SOLUTION"
+        self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
+        # Make sure it was added to the actual solution
+        self.assertEqual(["Sgt. Gray"], game.actual_solution)
+        # Make sure card was added to everyone's does_not_have list
+        for player in self.other_players:
+            self.assertIn("Sgt. Gray", game.players[player].does_not_have)
+        
 
 
 if __name__ == '__main__':
