@@ -145,8 +145,9 @@ class RandomGame():
         return False, False
 
 
-def main():
-    seed = random.randrange(sys.maxsize)
+def main(seed = None):
+    if not seed:
+        seed = random.randrange(sys.maxsize)
     randomGame = RandomGame(seed)
     # Get players and choose an arbitrary turn order to go in
     players = list(randomGame.players.keys()) + ["Me"]
@@ -161,6 +162,8 @@ def main():
                 game_finished, solution_correct = randomGame.other_player_turn(player)
             if game_finished:
                 break
+    return solution_correct
 
 if __name__ == '__main__':
-    main()
+    seed = random.randrange(sys.maxsize)
+    main(seed)
