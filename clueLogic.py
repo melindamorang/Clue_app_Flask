@@ -380,5 +380,63 @@ class game():
         self.add_to_log(f"Action: Snooped {snooped_player} and saw {card}.")
         self.add_card(snooped_player, card)
 
+    def play_game_from_log_text(self, log):
+        """Set up a game and play actions based on a list of logged actions."""
+        my_suspects = []
+        my_weapons = []
+        my_rooms = []
+        other_players_init = []
+        for idx, line in enumerate(log):
+            if line.startswith("My suspects: "):
+                # Indicates initialization of game. These are my cards.
+                my_suspects = line.split("My suspects: ")[1].split(", ")
+                if my_suspects == [""]:
+                    my_suspects = []
+            elif line.startswith("My weapons: "):
+                # Indicates initialization of game. These are my cards.
+                my_weapons = line.split("My weapons: ")[1].split(", ")
+                if my_weapons == [""]:
+                    my_weapons = []
+            elif line.startswith("My rooms: "):
+                # Indicates initialization of game. These are my cards.
+                my_rooms = line.split("My rooms: ")[1].split(", ")
+                if my_rooms == [""]:
+                    my_rooms = []
+            elif line.startswith("Initialized '"):
+                # Indicates initialization of game. This is another player.
+                name = line.split("Initialized '")[1].split("' with ")[0]
+                num_cards = int(line.split(f"Initialized '{name}' with ")[1].split(" cards.")[0])
+                other_players_init.append([name, num_cards])
+            elif line.startswith("Action: "):
+                if log[idx-1].startswith("Initialized '"):
+                    # This is the first action in the game, and we're finished with initialization,
+                    # so go ahead and pass in all the game setup.
+                    self.setup_game(my_suspects, my_weapons, my_rooms, other_players_init)
+                if line.startswith("Action: Snooped "):
+                    # I snooped.
+                    name = line.split("Action: Snooped ")[1].split(" and saw ")[0]
+                    card = line.split(f"Action: Snooped {name} and saw ")[1].strip(".")
+                    self.enter_snoop(name, card)
+            elif line.startswith("Disprovers: ") and log[idx-1].startswith("Action: I guessed: "):
+                # I guessed.
+                guess_disprovers = line.split("Disprovers: ")[1].split("; ")
+                cards = []
+                disprovers = []
+                for gd in guess_disprovers:
+                    card, disprover = gd.split(":")
+                    cards.append(card.strip())
+                    disprovers.append(disprover.lstrip())
+                disprovers = [d if d != "None" else None for d in disprovers]
+                self.enter_disproval_of_my_guess(cards[0], cards[1], cards[2], disprovers[0], disprovers[1], disprovers[2])
+            elif line.startswith("Disprovers: ") and log[idx-1].startswith("Action: Guess by "):
+                # Another player guessed.
+                guesser = log[idx-1].split("Action: Guess by ")[1].split(": ")[0]
+                guessed_suspect, guessed_weapon, guessed_room = log[idx-1].split(f"Action: Guess by {guesser}: ")[1].split(", ")
+                disprovers = line.split("Disprovers: ")[1].split(", ")
+                if disprovers == [""]:
+                    disprovers = []
+                self.enter_other_players_guess(guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers)
+
+
 if __name__ == '__main__':
     app.run(threaded=True)

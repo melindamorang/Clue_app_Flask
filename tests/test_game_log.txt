@@ -1,0 +1,491 @@
+Random seed was: 8413967750412662808
+Actual solution:  ['Mrs. Peacock', 'Candlestick', 'Studio']
+Number of players: 9
+Player_1 ['Knife', 'Horseshoe', 'Col. Mustard']
+Player_2 ['Billiard Room', 'Library', 'Dining Room']       
+Player_3 ['Carriage House', 'M. Brunette', 'Mr. Green']    
+Player_4 ['Courtyard', 'Drawing Room', 'Fountain']
+Player_5 ['Lead Pipe', 'Mme Rose', 'Revolver']
+Player_6 ['Wrench', 'Kitchen', 'Gazebo']
+Player_7 ['Poison', 'Prof. Plum', 'Trophy Room']
+Player_8 ['Miss Scarlet', 'Mrs. White', 'Miss Peach']      
+Me ['Sgt. Gray', 'Rope', 'Conservatory']
+New game initalized.
+My suspects:
+My weapons: Rope
+My rooms: Sgt. Gray, Conservatory
+Initialized 'Player_1' with 3 cards.
+Initialized 'Player_2' with 3 cards.
+Initialized 'Player_3' with 3 cards.
+Initialized 'Player_4' with 3 cards.
+Initialized 'Player_5' with 3 cards.
+Initialized 'Player_6' with 3 cards.
+Initialized 'Player_7' with 3 cards.
+Initialized 'Player_8' with 3 cards.
+Action: Guess by Player_6: Mrs. Peacock, Poison, Conservatory
+Disprovers: Player_7
+Player_1 did not disprove.
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_8 did not disprove.
+Player_1 does not have Mrs. Peacock.
+Player_1 does not have Poison.
+Player_2 does not have Mrs. Peacock.
+Player_2 does not have Poison.
+Player_3 does not have Mrs. Peacock.
+Player_3 does not have Poison.
+Player_4 does not have Mrs. Peacock.
+Player_4 does not have Poison.
+Player_5 does not have Mrs. Peacock.
+Player_5 does not have Poison.
+Player_8 does not have Mrs. Peacock.
+Player_8 does not have Poison.
+Player_7 has at least one of: Mrs. Peacock, Poison
+Action: Snooped Player_6 and saw Kitchen.
+Player_6 has Kitchen.
+Player_1 does not have Kitchen.
+Player_2 does not have Kitchen.
+Player_3 does not have Kitchen.
+Player_4 does not have Kitchen.
+Player_5 does not have Kitchen.
+Player_7 does not have Kitchen.
+Player_8 does not have Kitchen.
+Action: I guessed: Mme Rose, Rope, Kitchen
+Disprovers: Mme Rose: Player_5; Rope: ; Kitchen: Player_6
+Player_1 did not disprove.
+Player_1 does not have Mme Rose.
+Player_2 did not disprove.
+Player_2 does not have Mme Rose.
+Player_3 did not disprove.
+Player_3 does not have Mme Rose.
+Player_4 did not disprove.
+Player_4 does not have Mme Rose.
+Player_7 did not disprove.
+Player_7 does not have Mme Rose.
+Player_8 did not disprove.
+Player_8 does not have Mme Rose.
+Player_5 has Mme Rose.
+Player_6 does not have Mme Rose.
+Action: Guess by Player_2: Prof. Plum, Rope, Conservatory
+Disprovers: Player_7
+Player_1 did not disprove.
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_6 did not disprove.
+Player_8 did not disprove.
+Player_1 does not have Prof. Plum.
+Player_3 does not have Prof. Plum.
+Player_4 does not have Prof. Plum.
+Player_5 does not have Prof. Plum.
+Player_6 does not have Prof. Plum.
+Player_8 does not have Prof. Plum.
+Player_2 does not have Prof. Plum.
+Player_7 has Prof. Plum.
+Action: Guess by Player_1: Miss Scarlet, Wrench, Gazebo
+Disprovers: Player_6, Player_8
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_7 did not disprove.
+Player_2 does not have Miss Scarlet.
+Player_2 does not have Wrench.
+Player_2 does not have Gazebo.
+Player_3 does not have Miss Scarlet.
+Player_3 does not have Wrench.
+Player_3 does not have Gazebo.
+Player_4 does not have Miss Scarlet.
+Player_4 does not have Wrench.
+Player_4 does not have Gazebo.
+Player_5 does not have Miss Scarlet.
+Player_5 does not have Wrench.
+Player_5 does not have Gazebo.
+Player_7 does not have Miss Scarlet.
+Player_7 does not have Wrench.
+Player_7 does not have Gazebo.
+Player_6 has at least one of: Miss Scarlet, Wrench, Gazebo
+Player_8 has at least one of: Miss Scarlet, Wrench, Gazebo
+Action: Guess by Player_3: Sgt. Gray, Lead Pipe, Studio
+Disprovers: Player_5
+Player_1 did not disprove.
+Player_2 did not disprove.
+Player_4 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Player_1 does not have Lead Pipe.
+Player_1 does not have Studio.
+Player_2 does not have Lead Pipe.
+Player_2 does not have Studio.
+Player_4 does not have Lead Pipe.
+Player_4 does not have Studio.
+Player_6 does not have Lead Pipe.
+Player_6 does not have Studio.
+Player_7 does not have Lead Pipe.
+Player_7 does not have Studio.
+Player_8 does not have Lead Pipe.
+Player_8 does not have Studio.
+Player_5 has at least one of: Lead Pipe, Studio
+Action: Guess by Player_8: Prof. Plum, Wrench, Carriage House
+Disprovers: Player_3, Player_6, Player_7
+Player_1 did not disprove.
+Player_2 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_1 does not have Wrench.
+Player_1 does not have Carriage House.
+Player_2 does not have Carriage House.
+Player_4 does not have Carriage House.
+Player_5 does not have Carriage House.
+Player_8 does not have Wrench.
+Player_8 does not have Carriage House.
+Player_3 has Carriage House.
+Player_6 does not have Carriage House.
+Player_7 does not have Carriage House.
+Player_6 has Wrench.
+Although we don't know who has these cards, we know they are not the correct solution: ['Prof. Plum']
+Action: Guess by Player_5: Col. Mustard, Knife, Drawing Room
+Disprovers: Player_1, Player_4
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Player_2 does not have Col. Mustard.
+Player_2 does not have Knife.
+Player_2 does not have Drawing Room.
+Player_3 does not have Col. Mustard.
+Player_3 does not have Knife.
+Player_3 does not have Drawing Room.
+Player_6 does not have Col. Mustard.
+Player_6 does not have Knife.
+Player_6 does not have Drawing Room.
+Player_7 does not have Col. Mustard.
+Player_7 does not have Knife.
+Player_7 does not have Drawing Room.
+Player_8 does not have Col. Mustard.
+Player_8 does not have Knife.
+Player_8 does not have Drawing Room.
+Player_1 has at least one of: Col. Mustard, Knife, Drawing Room
+Player_4 has at least one of: Col. Mustard, Knife, Drawing Room
+Action: Guess by Player_7: Mrs. White, Rope, Conservatory
+Disprovers: Player_8
+Player_1 did not disprove.
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_6 did not disprove.
+Player_1 does not have Mrs. White.
+Player_2 does not have Mrs. White.
+Player_3 does not have Mrs. White.
+Player_4 does not have Mrs. White.
+Player_5 does not have Mrs. White.
+Player_6 does not have Mrs. White.
+Player_7 does not have Mrs. White.
+Player_8 has Mrs. White.
+Action: Guess by Player_4: Mrs. Peacock, Wrench, Kitchen
+Disprovers: Player_6
+Player_1 did not disprove.
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_5 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Player_7 does not have Mrs. Peacock.
+Player_7 has Poison.
+Player_6 does not have Poison.
+Player_6 has at least one of: Mrs. Peacock, Wrench, Kitchen
+Action: Guess by Player_6: Mrs. White, Knife, Carriage House
+Disprovers: Player_1, Player_3, Player_8
+Player_2 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_7 did not disprove.
+Player_4 does not have Knife.
+Player_5 does not have Knife.
+Player_1 has Knife.
+Although we don't know who has these cards, we know they are not the correct solution: ['Mrs. White']
+Action: Snooped Player_2 and saw Dining Room.
+Player_2 has Dining Room.
+Player_1 does not have Dining Room.
+Player_3 does not have Dining Room.
+Player_4 does not have Dining Room.
+Player_5 does not have Dining Room.
+Player_6 does not have Dining Room.
+Player_7 does not have Dining Room.
+Player_8 does not have Dining Room.
+Action: I guessed: Mme Rose, Knife, Drawing Room
+Disprovers: Mme Rose: Player_5; Knife: Player_1; Drawing Room: Player_4
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Player_4 has Drawing Room.
+Player_1 does not have Drawing Room.
+Player_5 does not have Drawing Room.
+Action: Guess by Player_2: Col. Mustard, Candlestick, Dining Room
+Disprovers: Player_1
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Player_3 does not have Candlestick.
+Player_4 does not have Col. Mustard.
+Player_4 does not have Candlestick.
+Player_5 does not have Col. Mustard.
+Player_5 does not have Candlestick.
+Player_6 does not have Candlestick.
+Player_7 does not have Candlestick.
+Player_8 does not have Candlestick.
+Player_1 has at least one of: Col. Mustard, Candlestick
+Action: Guess by Player_3: Mme Rose, Poison, Dining Room
+Disprovers: Player_2, Player_5, Player_7
+Player_1 did not disprove.
+Player_4 did not disprove.
+Player_6 did not disprove.
+Player_8 did not disprove.
+Although we don't know who has these cards, we know they are not the correct solution: ['Poison']
+Action: Guess by Player_8: Mrs. White, Lead Pipe, Dining Room
+Disprovers: Player_2, Player_5
+Player_1 did not disprove.
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_3 does not have Lead Pipe.
+Player_5 has Lead Pipe.
+Although we don't know who has these cards, we know they are not the correct solution: ['Lead Pipe']
+Action: Guess by Player_5: Mrs. Peacock, Horseshoe, Drawing Room
+Disprovers: Player_1, Player_4
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Player_2 does not have Horseshoe.
+Player_3 does not have Horseshoe.
+Player_6 does not have Mrs. Peacock.
+Mrs. Peacock is in actual solution!
+Player_6 does not have Horseshoe.
+Player_7 does not have Horseshoe.
+Player_8 does not have Horseshoe.
+Player_5 does not have Horseshoe.
+Player_1 has Horseshoe.
+Player_4 does not have Horseshoe.
+Although we don't know who has these cards, we know they are not the correct solution: ['Drawing Room']
+Action: Guess by Player_7: Miss Peach, Poison, Gazebo
+Disprovers: Player_6, Player_8
+Player_1 did not disprove.
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_1 does not have Miss Peach.
+Player_1 does not have Gazebo.
+Player_2 does not have Miss Peach.
+Player_3 does not have Miss Peach.
+Player_4 does not have Miss Peach.
+Player_5 does not have Miss Peach.
+Player_7 does not have Miss Peach.
+Player_6 has at least one of: Miss Peach, Gazebo
+Player_8 has at least one of: Miss Peach, Gazebo
+Although we don't know who has these cards, we know they are not the correct solution: ['Miss Peach', 'Gazebo']
+Action: Guess by Player_4: Mrs. Peacock, Poison, Library
+Disprovers: Player_2, Player_7
+Player_1 did not disprove.
+Player_3 did not disprove.
+Player_5 did not disprove.
+Player_6 did not disprove.
+Player_8 did not disprove.
+Player_1 does not have Library.
+Player_3 does not have Library.
+Player_5 does not have Library.
+Player_6 does not have Library.
+Player_8 does not have Library.
+Player_4 does not have Library.
+Player_2 has Library.
+Player_7 does not have Library.
+Although we don't know who has these cards, we know they are not the correct solution: ['Poison']
+Action: Guess by Player_6: Miss Peach, Candlestick, Billiard Room
+Disprovers: Player_2, Player_8
+Player_1 did not disprove.
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_7 did not disprove.
+Player_1 does not have Candlestick.
+Player_1 has Col. Mustard.
+Player_1 does not have Mr. Green.
+Player_1 does not have Miss Scarlet.
+Player_1 does not have M. Brunette.
+Player_1 does not have Revolver.
+Player_1 does not have Courtyard.
+Player_1 does not have Trophy Room.
+Player_1 does not have Billiard Room.
+Player_1 does not have Fountain.
+Player_3 does not have Billiard Room.
+Player_4 does not have Billiard Room.
+Player_5 does not have Billiard Room.
+Player_7 does not have Billiard Room.
+Player_2 has at least one of: Candlestick, Billiard Room
+Player_8 has at least one of: Miss Peach, Billiard Room
+Action: I guessed: Miss Scarlet, Knife, Drawing Room
+Disprovers: Miss Scarlet: Player_8; Knife: Player_1; Drawing Room: Player_4
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_5 did not disprove.
+Player_6 did not disprove.
+Player_6 does not have Miss Scarlet.
+Player_7 did not disprove.
+Player_8 has Miss Scarlet.
+Action: Guess by Player_2: Mr. Green, Horseshoe, Studio
+Disprovers: Player_1, Player_3
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Player_4 does not have Mr. Green.
+Player_5 does not have Mr. Green.
+Player_5 does not have Studio.
+Player_6 does not have Mr. Green.
+Player_7 does not have Mr. Green.
+Player_8 does not have Mr. Green.
+Player_3 has at least one of: Mr. Green, Studio
+Action: Guess by Player_1: M. Brunette, Horseshoe, Library
+Disprovers: Player_2, Player_3
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Player_4 does not have M. Brunette.
+Player_5 does not have M. Brunette.
+Player_6 does not have M. Brunette.
+Player_7 does not have M. Brunette.
+Player_8 does not have M. Brunette.
+Player_3 has M. Brunette.
+Player_2 does not have M. Brunette.
+Although we don't know who has these cards, we know they are not the correct solution: ['Library']
+Action: Guess by Player_8: Col. Mustard, Lead Pipe, Conservatory
+Disprovers: Player_1, Player_5
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Although we don't know who has these cards, we know they are not the correct solution: ['Lead Pipe']
+Action: Guess by Player_5: Mrs. Peacock, Lead Pipe, Drawing Room
+Disprovers: Player_4
+Player_1 did not disprove.
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Action: Guess by Player_7: Mrs. White, Wrench, Gazebo
+Disprovers: Player_6, Player_8
+Player_1 did not disprove.
+Player_2 did not disprove.
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_6 has at least one of: Wrench, Gazebo
+Player_8 has at least one of: Mrs. White, Gazebo
+Action: Guess by Player_4: Mr. Green, Candlestick, Billiard Room
+Disprovers: Player_2, Player_3
+Player_1 did not disprove.
+Player_5 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_8 did not disprove.
+Player_6 does not have Billiard Room.
+Player_8 does not have Billiard Room.
+Player_8 has Miss Peach.
+Player_6 does not have Miss Peach.
+Player_6 has Gazebo.
+Player_8 does not have Gazebo.
+Player_6 does not have Revolver.
+Player_6 does not have Courtyard.
+Player_6 does not have Trophy Room.
+Player_6 does not have Fountain.
+Player_8 does not have Revolver.
+Player_8 does not have Courtyard.
+Player_8 does not have Trophy Room.
+Player_8 does not have Fountain.
+Player_3 has Mr. Green.
+Player_2 does not have Mr. Green.
+Player_3 does not have Revolver.
+Player_3 does not have Courtyard.
+Player_3 does not have Trophy Room.
+Player_3 does not have Studio.
+Studio is in actual solution!
+Player_3 does not have Fountain.
+Player_2 has at least one of: Candlestick, Billiard Room
+Action: Guess by Player_6: Prof. Plum, Rope, Carriage House
+Disprovers: Player_3, Player_7
+Player_1 did not disprove.
+Player_2 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_8 did not disprove.
+Although we don't know who has these cards, we know they are not the correct solution: ['Prof. Plum']
+Action: Snooped Player_1 and saw Knife.
+Action: I guessed: Miss Scarlet, Horseshoe, Billiard Room
+Disprovers: Miss Scarlet: Player_8; Horseshoe: Player_1; Billiard Room: Player_2
+Player_3 did not disprove.
+Player_4 did not disprove.
+Player_5 did not disprove.
+Player_6 did not disprove.
+Player_7 did not disprove.
+Player_2 has Billiard Room.
+Player_2 does not have Candlestick.
+Candlestick is in actual solution!
+Player_2 does not have Revolver.
+Player_2 does not have Courtyard.
+Player_2 does not have Trophy Room.
+Player_2 does not have Fountain.
+Game is finished. Determined solution: ['Mrs. Peacock', 'Candlestick', 'Studio']
+Correct solution was: ['Mrs. Peacock', 'Candlestick', 'Studio']
+AWESOME! CORRECT SOLUTION DETERMINED.
+Detective notebook:
+--suspects--
+   Col. Mustard Player_1
+   Prof. Plum Player_7
+   Mr. Green Player_3
+   Mrs. Peacock SOLUTION
+   Miss Scarlet Player_8
+   Mrs. White Player_8
+   Mme Rose Player_5
+   Sgt. Gray NO
+   M. Brunette Player_3
+   Miss Peach Player_8
+--weapons--
+   Knife Player_1
+   Candlestick SOLUTION
+   Revolver NO
+   Rope Me
+   Lead Pipe Player_5
+   Wrench Player_6
+   Poison Player_7
+   Horseshoe Player_1
+--rooms--
+   Courtyard NO
+   Gazebo Player_6
+   Drawing Room Player_4
+   Dining Room Player_2
+   Kitchen Player_6
+   Carriage House Player_3
+   Trophy Room NO
+   Conservatory Me
+   Studio SOLUTION
+   Billiard Room Player_2
+   Library Player_2
+   Fountain NO
