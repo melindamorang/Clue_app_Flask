@@ -253,32 +253,24 @@ class game():
     def enter_disproval_of_my_guess(self, guessed_suspect, guessed_weapon, guessed_room,
                                     disprover_suspect=None, disprover_weapon=None, disprover_room=None):
         """Enter info when someone disproves my guess."""
-        self.add_to_log(f"I guessed: {guessed_suspect}, {guessed_weapon}, {guessed_room}")
+        guess = [guessed_suspect, guessed_weapon, guessed_room]
+        self.add_to_log(f"Action: I guessed: {', '.join(guess)}")
+        self.add_to_log(
+            f"Disprovers: {guessed_suspect}: {disprover_suspect}; {guessed_weapon}: {disprover_weapon}; {guessed_room}: {disprover_room}"
+            )
+        # The non-disprovers have none of the cards in the guess
         non_disprovers = [p for p in self.players.keys() if p not in [disprover_suspect, disprover_weapon, disprover_room, "Me"]]
         for nond in non_disprovers:
             self.add_to_log(f"{nond} did not disprove.")
-        # Enter retrieved information
+            for card in guess:
+                self.enter_not_has(nond, card)
+        # Add info for disprovers
         if disprover_suspect:
-            self.add_to_log(f"{disprover_suspect} disproved {guessed_suspect}.")
             self.add_card(disprover_suspect, guessed_suspect)
-        else:
-            self.add_to_log(f"No one disproved {guessed_suspect}.")
-            for player_name in non_disprovers:
-                self.enter_not_has(player_name, guessed_suspect)
         if disprover_weapon:
-            self.add_to_log(f"{disprover_weapon} disproved {guessed_weapon}.")
             self.add_card(disprover_weapon, guessed_weapon)
-        else:
-            self.add_to_log(f"No one disproved {guessed_weapon}.")
-            for player_name in non_disprovers:
-                self.enter_not_has(player_name, guessed_weapon)
         if disprover_room:
-            self.add_to_log(f"{disprover_room} disproved {guessed_room}.")
             self.add_card(disprover_room, guessed_room)
-        else:
-            self.add_to_log(f"No one disproved {guessed_room}.")
-            for player_name in non_disprovers:
-                self.enter_not_has(player_name, guessed_room)
 
     def narrow_down_guess(self, guess, disprovers):
         """For each disprover and remaining item in the guess, eliminate possibilities."""
@@ -323,7 +315,7 @@ class game():
 
     def enter_other_players_guess(self, guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers):
         """Get other player's entered guess and disprovers and see what we can learn."""
-        self.add_to_log(f"Guess by {guesser}: {guessed_suspect}, {guessed_weapon}, {guessed_room}")
+        self.add_to_log(f"Action: Guess by {guesser}: {guessed_suspect}, {guessed_weapon}, {guessed_room}")
         self.add_to_log(f"Disprovers: {', '.join(disprovers)}")
         guess = [guessed_suspect, guessed_weapon, guessed_room]
         non_disprovers = [p for p in self.players.keys() if p not in disprovers + [guesser, "Me"]]
@@ -385,7 +377,7 @@ class game():
 
     def enter_snoop(self, snooped_player, card):
         """Enter a snooped card for a player."""
-        self.add_to_log(f"Snooped {snooped_player}.")
+        self.add_to_log(f"Action: Snooped {snooped_player} and saw {card}.")
         self.add_card(snooped_player, card)
 
 if __name__ == '__main__':
