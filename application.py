@@ -78,9 +78,8 @@ def enterSnoop():
     # Get the player that was snooped and the card seen
     player = request.form.get("player")
     card = request.form.get("card")
-    # Update player info
-    session["game"].add_to_log(f"Snooped {player}.")
-    session["game"].add_card(player, card)
+    # Enter the snooped info
+    session["game"].enter_snoop(player, card)
     # Render notebook
     return renderMyNotebook()
 

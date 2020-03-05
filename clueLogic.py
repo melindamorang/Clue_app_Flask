@@ -152,7 +152,6 @@ class game():
                     self.detective_notebook[card_type][cd] = "NO"
         else:
             self.check_for_solution_by_elimination()
-        
 
     def add_card(self, player_name, card):
         """Indicate that a player has a certain card."""
@@ -384,6 +383,10 @@ class game():
                 # Update detective notebook
                 self.update_detective_notebook(card, "NO")
 
+    def enter_snoop(self, snooped_player, card):
+        """Enter a snooped card for a player."""
+        self.add_to_log(f"Snooped {snooped_player}.")
+        self.add_card(snooped_player, card)
 
 if __name__ == '__main__':
     app.run(threaded=True)

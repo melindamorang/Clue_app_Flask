@@ -380,6 +380,17 @@ class TestClueLogic(unittest.TestCase):
         # Make sure card was added to everyone's does_not_have list
         for player in self.other_players:
             self.assertIn("Sgt. Gray", game.players[player].does_not_have)
+
+    def test_enter_snoop(self):
+        """Test enter_snoop."""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        snooped_player = "Sarah"
+        snooped_card = "Mr. Green"
+        # Snoop
+        game.enter_snoop(snooped_player, snooped_card)
+        self.assertIn(snooped_card, game.players[snooped_player].has)
         
 
 
