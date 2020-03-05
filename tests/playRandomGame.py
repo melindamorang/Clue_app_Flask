@@ -69,8 +69,7 @@ class RandomGame():
     def snoop(self, player):
         """Pick a random one of the snooped players cards to see."""
         snooped_card = random.choice(self.players[player])
-        self.game.add_to_log(f"Snooped {player}.")
-        self.game.add_card(player, snooped_card)
+        self.game.enter_snoop(player, snooped_card)
 
     def guess(self):
         """Make a random guess and enter disprovers."""
@@ -110,7 +109,7 @@ class RandomGame():
         # Give the player an 80% chance of making a guess
         if random.random() <= 0.8:
             self.other_player_guess(player)
-        print("Current solution:", self.game.actual_solution)
+        # print("Current solution:", self.game.actual_solution)
         return self.is_game_finished()
 
     def my_turn(self):
@@ -118,11 +117,11 @@ class RandomGame():
         # Give me a 25% chance of snooping
         if random.random() <= 0.25:
             self.snoop(random.choice(list(self.players.keys())))
-        print("Current solution:", self.game.actual_solution)
+        # print("Current solution:", self.game.actual_solution)
         # Give me an 80% chance of making a guess
         if random.random() <= 0.8:
             self.guess()
-        print("Current solution:", self.game.actual_solution)
+        # print("Current solution:", self.game.actual_solution)
         return self.is_game_finished()
 
     def is_game_finished(self):
