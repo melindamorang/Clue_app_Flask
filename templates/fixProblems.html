@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="col-md-8">
+    <h1>Fix incorrect information</h1>
+    <form action="{{ url_for('replayFromLog') }}" method="post">
+        <p>If you entered some information incorrectly, you can fix it here.</p>
+        <p>Check the actions that were entered incorrectly. The checked actions
+        and their effects will be removed from your game.
+        You can re-enter a prior action correctly from the main page
+        after this step is done.</p>
+
+        {% for action in log_actions %}
+            <input type="checkbox" class="form-check-input" value="{{ action }}" name="actions" id="Action_{{ loop.index }}">
+            <label class="form-check-label" for="Action_{{ loop.index }}">{{ action }}</label><br />
+        {% endfor %}<br />
+
+        {% include "submit.html" %}
+
+    </form>
+
+    {% include "cancel.html" %}
+</div>
+
+<div class="col-md-4">
+    {% include "DetectiveNotebook.html" %}
+</div>
+    
+{% endblock %}

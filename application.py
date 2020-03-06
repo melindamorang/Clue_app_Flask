@@ -144,6 +144,38 @@ def enterOtherPlayerGuess():
     # Render notebook
     return renderMyNotebook()
 
+@app.route('/fixProblems')
+def fixProblems():
+    log_actions = []
+    for line in session["game"].log:
+        if line.startswith("Action: "):
+            log_actions.append(line)
+    return render_template(
+        "fixProblems.html",
+        log_actions=log_actions,
+        suspect_dict=session["game"].detective_notebook["suspects"],
+        weapon_dict=session["game"].detective_notebook["weapons"],
+        room_dict=session["game"].detective_notebook["rooms"]
+        )
+
+@app.route('/replayFromLog', methods=["POST"])
+def replayFromLog():
+    log = [l for l in session["game"].log]
+    log.reverse()
+    # Get the bad entries from the form
+    bad_actions = request.form.getlist("actions")
+    for action in bad_actions:
+        if action in log:
+            log.remove(action)
+
+    # Reinitialize a game and play through it automatically from scratch
+    # using the cleaned-up log
+    session["game"] = clueLogic.game()
+    session["game"].play_game_from_log_text(log)
+
+    # Render notebook
+    return renderMyNotebook()
+
 
 if __name__ == '__main__':
     app.run(threaded=True)
