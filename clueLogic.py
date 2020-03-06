@@ -254,9 +254,8 @@ class game():
                                     disprover_suspect=None, disprover_weapon=None, disprover_room=None):
         """Enter info when someone disproves my guess."""
         guess = [guessed_suspect, guessed_weapon, guessed_room]
-        self.add_to_log(f"Action: I guessed: {', '.join(guess)}")
         self.add_to_log(
-            f"Disprovers: {guessed_suspect}: {disprover_suspect}; {guessed_weapon}: {disprover_weapon}; {guessed_room}: {disprover_room}"
+            f"Action: I guessed: {guessed_suspect} (Disprover: {disprover_suspect}); {guessed_weapon} (Disprover: {disprover_weapon}); {guessed_room} (Disprover: {disprover_room})"
             )
         # The non-disprovers have none of the cards in the guess
         non_disprovers = [p for p in self.players.keys() if p not in [disprover_suspect, disprover_weapon, disprover_room, "Me"]]
@@ -315,9 +314,8 @@ class game():
 
     def enter_other_players_guess(self, guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers):
         """Get other player's entered guess and disprovers and see what we can learn."""
-        self.add_to_log(f"Action: Guess by {guesser}: {guessed_suspect}, {guessed_weapon}, {guessed_room}")
-        self.add_to_log(f"Disprovers: {', '.join(disprovers)}")
         guess = [guessed_suspect, guessed_weapon, guessed_room]
+        self.add_to_log(f"Action: Guess by {guesser}: {', '.join(guess)}; Disprovers: {', '.join(disprovers)}")
         non_disprovers = [p for p in self.players.keys() if p not in disprovers + [guesser, "Me"]]
         for nond in non_disprovers:
             self.add_to_log(f"{nond} did not disprove.")
@@ -417,26 +415,25 @@ class game():
                     name = line.split("Action: Snooped ")[1].split(" and saw ")[0]
                     card = line.split(f"Action: Snooped {name} and saw ")[1].strip(".")
                     self.enter_snoop(name, card)
-            elif line.startswith("Disprovers: ") and log[idx-1].startswith("Action: I guessed: "):
-                # I guessed.
-                guess_disprovers = line.split("Disprovers: ")[1].split("; ")
-                cards = []
-                disprovers = []
-                for gd in guess_disprovers:
-                    card, disprover = gd.split(":")
-                    cards.append(card.strip())
-                    disprovers.append(disprover.lstrip())
-                disprovers = [d if d != "None" else None for d in disprovers]
-                self.enter_disproval_of_my_guess(cards[0], cards[1], cards[2], disprovers[0], disprovers[1], disprovers[2])
-            elif line.startswith("Disprovers: ") and log[idx-1].startswith("Action: Guess by "):
-                # Another player guessed.
-                guesser = log[idx-1].split("Action: Guess by ")[1].split(": ")[0]
-                guessed_suspect, guessed_weapon, guessed_room = log[idx-1].split(f"Action: Guess by {guesser}: ")[1].split(", ")
-                disprovers = line.split("Disprovers: ")[1].split(", ")
-                if disprovers == [""]:
+                elif line.startswith("Action: Guess by "):
+                    # Another player guessed.
+                    guesser = line.split("Action: Guess by ")[1].split(": ")[0]
+                    guessed_suspect, guessed_weapon, guessed_room = line.split(f"Action: Guess by {guesser}: ")[1].split("; Disprovers: ")[0].split(", ")
+                    disprovers = line.split("; Disprovers: ")[1].split(", ")
+                    if disprovers == [""]:
+                        disprovers = []
+                    self.enter_other_players_guess(guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers)
+                elif line.startswith("Action: I guessed: "):
+                    # I guessed.
+                    guess_disprovers = line.split("Action: I guessed: ")[1].split("; ")
+                    cards = []
                     disprovers = []
-                self.enter_other_players_guess(guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers)
-
+                    for gd in guess_disprovers:
+                        card, disprover = gd.split(" (Disprover: ")
+                        cards.append(card.strip())
+                        disprovers.append(disprover.strip(")"))
+                    self.enter_disproval_of_my_guess(cards[0], cards[1], cards[2], disprovers[0], disprovers[1], disprovers[2])
+            
 
 if __name__ == '__main__':
     app.run(threaded=True)
