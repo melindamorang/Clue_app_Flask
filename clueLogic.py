@@ -384,6 +384,7 @@ class game():
         my_weapons = []
         my_rooms = []
         other_players_init = []
+        game_initialized = False
         for idx, line in enumerate(log):
             if line.startswith("My suspects: "):
                 # Indicates initialization of game. These are my cards.
@@ -409,6 +410,7 @@ class game():
                 if log[idx-1].startswith("Initialized '"):
                     # This is the first action in the game, and we're finished with initialization,
                     # so go ahead and pass in all the game setup.
+                    game_initialized = True
                     self.setup_game(my_suspects, my_weapons, my_rooms, other_players_init)
                 if line.startswith("Action: Snooped "):
                     # I snooped.
@@ -433,7 +435,11 @@ class game():
                         cards.append(card.strip())
                         disprovers.append(disprover.strip(")"))
                     self.enter_disproval_of_my_guess(cards[0], cards[1], cards[2], disprovers[0], disprovers[1], disprovers[2])
-            
+        
+        # If we got all the way through the log without initializing the game, the log probably had no actions yet,
+        # or all actions were removed, so go ahead and initialize it.
+        if not game_initialized:
+            self.setup_game(my_suspects, my_weapons, my_rooms, other_players_init)
 
 if __name__ == '__main__':
     app.run(threaded=True)
