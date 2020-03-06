@@ -30,7 +30,7 @@ function validate(){
         return false;
     }
     // Make sure I didn't name a player with a forbidden name.
-    forbidden_names = ["Me", "NO", "No one", "SOLUTION"]
+    forbidden_names = ["Me", "NO", "No one", "SOLUTION", "None", "Action", "Disprovers", "Disprover"]
     for(var i=0, len=forbidden_names.length; i<len; i++){
         if (otherPlayerNames.includes(forbidden_names[i])){
             var text = `You cannot name another player "${forbidden_names[i]}".`
