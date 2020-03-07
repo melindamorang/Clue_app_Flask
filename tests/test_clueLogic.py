@@ -40,7 +40,7 @@ class TestClueLogic(unittest.TestCase):
             "Sarah": [
                 "M. Brunette",
                 "Mr. Green",
-                "Horseshoe"
+                "Horseshoe",
                 "Poison",
                 "Billiard Room",
                 "Fountain",
@@ -117,7 +117,7 @@ class TestClueLogic(unittest.TestCase):
         # We already know all of Sarah's cards except one
         game.players[player_to_add_to].has = [
             "M. Brunette",
-            "Horseshoe"
+            "Horseshoe",
             "Poison",
             "Billiard Room",
             "Fountain",
@@ -309,6 +309,10 @@ class TestClueLogic(unittest.TestCase):
         # Set up a contrived game with circumstances useful for testing
         game = clueLogic.game()
         game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        game.actual_solution = ["Sgt. Gray"]
+        game.not_it_but_not_sure_who = ["Lead Pipe"]
+        game.players["Sarah"].has = ["Billiard Room"]
+        game.players["Susan"].has = ["Mrs. Peacock"]
         # Initialize detective notebook
         expected_detective_notebook = {
             "suspects": {suspect: "" for suspect in clueLogic.cards["suspects"]},
@@ -321,23 +325,12 @@ class TestClueLogic(unittest.TestCase):
             expected_detective_notebook["weapons"][weapon] = "Me"
         for room in self.my_rooms:
             expected_detective_notebook["rooms"][room] = "Me"
-        # Update detective notebook with specific card for specific player
-        game.update_detective_notebook("Mrs. Peacock", "Susan")
-        expected_detective_notebook["suspects"]["Mrs. Peacock"] = "Susan"
-        self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
-        # Update detective notebook with "NO"
-        game.update_detective_notebook("Col. Mustard", "NO")
-        expected_detective_notebook["suspects"]["Col. Mustard"] = "NO"
-        self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
-        # Update detective notebook with "NO" when we already know who has that card
-        game.update_detective_notebook("Mrs. Peacock", "NO")
-        self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
-        # Update detective notebook with "SOLUTION"
-        game.update_detective_notebook("Sgt. Gray", "SOLUTION")
         expected_detective_notebook["suspects"]["Sgt. Gray"] = "SOLUTION"
-        for card in expected_detective_notebook["suspects"]:
-            if not expected_detective_notebook["suspects"][card]:
-                expected_detective_notebook["suspects"][card] = "NO"
+        expected_detective_notebook["weapons"]["Lead Pipe"] = "NO"
+        expected_detective_notebook["suspects"]["Mrs. Peacock"] = "Susan"
+        expected_detective_notebook["rooms"]["Billiard Room"] = "Sarah"
+        # Update detective notebook with current information
+        game.update_detective_notebook()
         self.assertDictEqual(expected_detective_notebook, game.detective_notebook)
 
     def test_check_for_solution_by_elimination(self):
@@ -346,13 +339,13 @@ class TestClueLogic(unittest.TestCase):
         game = clueLogic.game()
         game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
         # Initialize detective notebook so that there is only one remaining suspect
-        game.detective_notebook["suspects"]["Mrs. Peacock"] = "Susan"
-        game.detective_notebook["suspects"]["Col. Mustard"] = "Susan"
-        game.detective_notebook["suspects"]["Mrs. White"] = "Susan"
-        game.detective_notebook["suspects"]["Miss Peach"] = "Susan"
-        game.detective_notebook["suspects"]["Miss Scarlet"] = "Andy"
-        game.detective_notebook["suspects"]["M. Brunette"] = "Sarah"
-        game.detective_notebook["suspects"]["Mr. Green"] = "Sarah"
+        game.add_card("Susan", "Mrs. Peacock")
+        game.add_card("Susan", "Col. Mustard")
+        game.add_card("Susan", "Mrs. White")
+        game.add_card("Susan", "Miss Peach")
+        game.add_card("Andy", "Miss Scarlet")
+        game.add_card("Sarah", "M. Brunette")
+        game.add_card("Sarah", "Mr. Green")
         # Run the method and make sure the the remaining Sgt. Gray is tagged with SOLUTION
         game.check_for_solution_by_elimination()
         expected_detective_notebook = {
@@ -381,6 +374,22 @@ class TestClueLogic(unittest.TestCase):
         for player in self.other_players:
             self.assertIn("Sgt. Gray", game.players[player].does_not_have)
 
+    def test_add_to_actual_solution(self):
+        """Test add_to_actual_solution."""
+        # Set up a contrived game with circumstances useful for testing
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        # Add to the actual solution
+        card_to_add = "Sgt. Gray"
+        game.add_to_actual_solution(card_to_add)
+        # Check that the card was added and that all other cards of this type are in not_it_but_not_sure_who
+        self.assertIn(card_to_add, game.actual_solution)
+        for card in clueLogic.cards["suspects"]:
+            if card in self.sample_game["Me"] or card == card_to_add:
+                self.assertNotIn(card, game.not_it_but_not_sure_who)
+            else:
+                self.assertIn(card, game.not_it_but_not_sure_who)            
+
     def test_enter_snoop(self):
         """Test enter_snoop."""
         # Set up a contrived game with circumstances useful for testing
@@ -391,7 +400,52 @@ class TestClueLogic(unittest.TestCase):
         # Snoop
         game.enter_snoop(snooped_player, snooped_card)
         self.assertIn(snooped_card, game.players[snooped_player].has)
-        
+
+    def test_conflicting_info(self):
+        """Test that nothing terrible happens when conflicting info is entered."""
+        # Add one of my cards to another player
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        game.add_card("Sarah", "Mme Rose")
+        self.assertIn("Mme Rose", game.players["Me"].has)
+        self.assertNotIn("Mme Rose", game.players["Sarah"].has)
+
+        # Add a card when we think the player doesn't have that card
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        bad_card = "Horseshoe"
+        game.enter_not_has("Sarah", bad_card)
+        game.add_card("Sarah", bad_card)
+        self.assertIn(bad_card, game.players["Sarah"].has)
+        self.assertNotIn(bad_card, game.players["Sarah"].does_not_have)
+
+        # Add a card when we think another player has that card
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        bad_card = "Horseshoe"
+        game.add_card("Susan", bad_card)
+        game.add_card("Sarah", bad_card)
+        self.assertIn(bad_card, game.players["Sarah"].has)
+        self.assertNotIn(bad_card, game.players["Susan"].has)
+        self.assertIn(bad_card, game.players["Susan"].does_not_have)
+
+        # Add a card when we think it's in the actual solution
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        bad_card = "Horseshoe"
+        game.actual_solution.append(bad_card)
+        game.add_card("Sarah", bad_card)
+        self.assertIn(bad_card, game.players["Sarah"].has)
+        self.assertNotIn(bad_card, game.actual_solution)
+
+        # Indicate that a player doesn't have a card when we think they have it
+        game = clueLogic.game()
+        game.setup_game(self.my_suspects, self.my_weapons, self.my_rooms, self.other_players_init)
+        bad_card = "Horseshoe"
+        game.add_card("Susan", bad_card)
+        game.enter_not_has("Susan", bad_card)
+        self.assertIn(bad_card, game.players["Susan"].does_not_have)
+        self.assertNotIn(bad_card, game.players["Susan"].has)
 
 
 if __name__ == '__main__':

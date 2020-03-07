@@ -38,6 +38,8 @@ cards = {
     ]
 }
 
+CONFLICTING_INFO = "Warning: Conflicting information detected. Please review prior actions and remove anything incorrect."
+
 def get_card_type_key(card):
     """Return the key indicating the type of card this is (suspects, weapons, rooms)."""
     if card in cards["suspects"]:
@@ -112,61 +114,72 @@ class game():
             self.players[player_info[0]] = self.player(player_info[0], player_info[1], [card for card in my_cards])
             self.add_to_log(f"Initialized '{player_info[0]}' with {player_info[1]} cards.")
         # Update the detective notebook with my cards
-        for suspect in my_suspects:
-            self.update_detective_notebook(suspect, "Me", "suspects")
-        for weapon in my_weapons:
-            self.update_detective_notebook(weapon, "Me", "weapons")
-        for room in my_rooms:
-            self.update_detective_notebook(room, "Me", "rooms")
+        self.update_detective_notebook()
 
     def check_for_solution_by_elimination(self):
         """Check if we've eliminated options sufficiently to determine the actual solution."""
         for card_type in cards:
             unknown = []
+            solution_known = False
             for card in cards[card_type]:
+                owner = self.detective_notebook[card_type][card]
+                if owner == "SOLUTION":
+                    solution_known = True
                 if not self.detective_notebook[card_type][card]:
                     unknown.append(card)
             # If there is only one remaining unknown in the category, this must be the actual solution.
-            if len(unknown) == 1:
+            if len(unknown) == 1 and not solution_known:
                 self.add_to_log(f"{card} is the last remaining unknown in {card_type}.")
-                self.add_to_log(f"{card} is in actual solution!")
-                self.detective_notebook[card_type][unknown[0]] = "SOLUTION"
-                self.actual_solution.append(unknown[0])
-                self.actual_solution = list(set(self.actual_solution))
                 for player in self.players:
                     self.enter_not_has(player, unknown[0])
+                self.add_to_actual_solution(unknown[0])
+                self.update_detective_notebook()
 
-    def update_detective_notebook(self, card, owner, card_type=None):
-        """Update the detective notebook with new information."""
-        if not card_type:
+    def update_detective_notebook(self):
+        """Update the detective notebook based on all current info."""
+        for card in self.actual_solution:
             card_type = get_card_type_key(card)
-        if owner == "NO":
-            if not self.detective_notebook[card_type][card]:
-                self.detective_notebook[card_type][card] = owner
-        else:
-            self.detective_notebook[card_type][card] = owner
-        if owner == "SOLUTION":
-            # Update all other items in detective notebook with a mark indicating they aren't the solution
-            for cd in cards[card_type]:
-                if not self.detective_notebook[card_type][cd]:
-                    self.detective_notebook[card_type][cd] = "NO"
-        else:
-            self.check_for_solution_by_elimination()
+            self.detective_notebook[card_type][card] = "SOLUTION"
+        for card in self.not_it_but_not_sure_who:
+            card_type = get_card_type_key(card)
+            self.detective_notebook[card_type][card] = "NO"
+        for player in self.players:
+            for card in self.players[player].has:
+                card_type = get_card_type_key(card)
+                self.detective_notebook[card_type][card] = player
+
+        self.check_for_solution_by_elimination()
 
     def add_card(self, player_name, card):
         """Indicate that a player has a certain card."""
         if card in self.players[player_name].has:
             # We already knew this.
             return
+        if card in self.players["Me"].has:
+            # This is incorrect, since I have this card, so throw a warning and don't do anything.
+            self.add_to_log(CONFLICTING_INFO)
+            return
         self.add_to_log(f"{player_name} has {card}.")
         self.players[player_name].has.append(card)
-        # Update detective notebook
-        self.update_detective_notebook(card, player_name)
-        # Since this player has this card, no one else does.
+        # In case this information conflicts with info we already have,
+        # assume this new info is correct. Eliminate this card from
+        # this players does_not_have and other players' has.
+        if card in self.players[player_name].does_not_have:
+            self.add_to_log(CONFLICTING_INFO)
+            self.players[player_name].does_not_have.remove(card)
+        # Since this player has this card, no one else does, and it's not in the actual solution.
         if card in self.not_it_but_not_sure_who:
             self.not_it_but_not_sure_who.remove(card)
+        if card in self.actual_solution:
+            # This shouldn't happen and indicates incorrect information somewhere.
+            self.add_to_log(CONFLICTING_INFO)
+            self.actual_solution.remove(card)
         for plyr in [p for p in self.players.keys() if p not in [player_name, "Me"]]:
             self.enter_not_has(plyr, card)
+            if card in self.players[plyr].has:
+                # There is conflicting info. No one else should have this card.
+                self.add_to_log(CONFLICTING_INFO)
+                self.players[plyr].has.remove(card)
         # If we now know all of the player's cards, then we know they don't have any other cards
         if len(self.players[player_name].has) == self.players[player_name].num_cards:
             for cd in cards["suspects"] + cards["weapons"] + cards["rooms"]:
@@ -183,6 +196,8 @@ class game():
                     continue
             new_at_least_one.append(guess)
         self.players[player_name].at_least_one = new_at_least_one
+        # Update detective notebook
+        self.update_detective_notebook()
 
     def enter_not_has(self, player_name, card):
         """Indicate that a player does not have a certain card.""" 
@@ -191,12 +206,15 @@ class game():
             return
         self.add_to_log(f"{player_name} does not have {card}.")
         self.players[player_name].does_not_have.append(card)
+        # If this card is in the player's has, there is a data issue, but we'll assume this new
+        # information is more correct.
+        if card in self.players[player_name].has:
+            self.add_to_log(CONFLICTING_INFO)
+            self.players[player_name].has.remove(card)
         # Check if no one has this card.  If so, we now know that this is the actual solution.
         if self.is_actual_solution(card):
-            self.actual_solution.append(card)
-            self.actual_solution = list(set(self.actual_solution))
+            self.add_to_actual_solution(card)
             self.add_to_log(f"{card} is in actual solution!")
-            self.update_detective_notebook(card, "SOLUTION")
         # Go through prior guesses where we know they had at least one of the cards
         # and remove the current card that we know we don't have.
         new_at_least_one = []
@@ -216,6 +234,8 @@ class game():
             new_at_least_one.append(guess)
         # Update self.at_least_one with our new info
         self.players[player_name].at_least_one = new_at_least_one
+        # Update detective notebook
+        self.update_detective_notebook()
 
     def enter_at_least_one(self, player_name, guess):
         """Indicate that the player has at least one card from this guess."""
@@ -225,6 +245,10 @@ class game():
         # Remove cards from guess that we already know this player doesn't have or that is the actual solution
         # This also accounts for checking anything that other players do have.
         guess = [card for card in guess if card not in self.players[player_name].does_not_have + self.actual_solution]
+        # If there's nothing left in the guess, we have conflicting data. Return without doing anything.
+        if not guess:
+            self.add_to_log(CONFLICTING_INFO)
+            return
         # If there's only one card in the guess, obviously this player has it.
         if len(guess) == 1:
             self.add_card(player_name, guess[0])
@@ -250,6 +274,41 @@ class game():
         # If we found the card in all does_not_have lists, this must be the answer
         return True
 
+    def add_to_actual_solution(self, card):
+        """Add card to known solution."""
+        if card in self.actual_solution:
+            # We already knew this
+            return
+
+        if card in self.not_it_but_not_sure_who:
+            self.add_to_log(CONFLICTING_INFO)
+            return
+
+        card_type = get_card_type_key(card)
+        for cd in self.actual_solution:
+            if get_card_type_key(cd) == card_type:
+                self.add_to_log(CONFLICTING_INFO)
+
+        self.add_to_log(f"{card} is in actual solution!")
+        self.actual_solution.append(card)
+
+        if len(self.actual_solution) > 3:
+            self.add_to_log(CONFLICTING_INFO)
+
+        for cd in cards[card_type]:
+            if cd == card:
+                continue
+            owner_known = False
+            for player in self.players:
+                if cd in self.players[player].has:
+                    owner_known = True
+            if not owner_known:
+                self.not_it_but_not_sure_who.append(cd)
+                self.not_it_but_not_sure_who = list(set(self.not_it_but_not_sure_who))
+
+        self.update_detective_notebook()
+
+
     def enter_disproval_of_my_guess(self, guessed_suspect, guessed_weapon, guessed_room,
                                     disprover_suspect=None, disprover_weapon=None, disprover_room=None):
         """Enter info when someone disproves my guess."""
@@ -273,8 +332,14 @@ class game():
 
     def narrow_down_guess(self, guess, disprovers):
         """For each disprover and remaining item in the guess, eliminate possibilities."""
-        # If the guess is empty, we're done
-        if not guess:
+        # If the guess or disprovers is empty, we're done
+        if not guess or not disprovers:
+            return [], []
+
+        # If the number of disprovers is greater than the length of the guess, we have a data
+        # problem, so just return without doing anything
+        if len(disprovers) > len(guess):
+            self.add_to_log(CONFLICTING_INFO)
             return [], []
 
         # If there's exactly one disprover and one card remaining in the guess, then we know
@@ -370,8 +435,9 @@ class game():
             for card in guess:
                 self.not_it_but_not_sure_who.append(card)
                 self.not_it_but_not_sure_who = list(set(self.not_it_but_not_sure_who))
-                # Update detective notebook
-                self.update_detective_notebook(card, "NO")
+
+        # Update detective notebook
+        self.update_detective_notebook()
 
     def enter_snoop(self, snooped_player, card):
         """Enter a snooped card for a player."""
