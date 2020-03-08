@@ -67,7 +67,7 @@ class RandomGame():
         return guessed_suspect, guessed_weapon, guessed_room
 
     def snoop(self, player):
-        """Pick a random one of the snooped players cards to see."""
+        """Pick a random one of the snooped player's cards to see."""
         snooped_card = random.choice(self.players[player])
         self.game.enter_snoop(player, snooped_card)
 
@@ -144,7 +144,44 @@ class RandomGame():
         return False, False
 
 
-def main(seed = None):
+class RandomInvalidGame(RandomGame):
+    """Play a game where inputs may be invalid, just to make sure the logic never crashes."""
+
+    def snoop(self, player):
+        """Pick a random card to see, even if it doesn't belong to this player."""
+        snooped_card = random.choice(clueLogic.cards["suspects"] + clueLogic.cards["weapons"] + clueLogic.cards["rooms"])
+        self.game.enter_snoop(player, snooped_card)
+
+    def guess(self):
+        """Make a random guess and enter disprovers."""
+        # Generate a random guess
+        guessed_suspect, guessed_weapon, guessed_room = self.generate_random_guess()
+        # Collect disprovers, but make sure the disprover doesn't show multiple cards
+        disprovers = {"suspect": "", "weapon": "", "room": ""}
+        num_disprovers = random.randint(0, min(3, len(self.players)))
+        if num_disprovers:
+            disproving_players = random.sample(list(self.players.keys()), num_disprovers)
+            disproving_keys = random.sample(list(disprovers.keys()), num_disprovers)
+            for idx, key in enumerate(disproving_keys):
+                disprovers[key] = disproving_players[idx]
+        self.game.enter_disproval_of_my_guess(guessed_suspect, guessed_weapon, guessed_room, disprovers["suspect"], disprovers["weapon"], disprovers["room"])
+
+    def other_player_guess(self, guesser):
+        """Make another player make a random guess and enter disprovers."""
+        # Generate a random guess
+        guessed_suspect, guessed_weapon, guessed_room = self.generate_random_guess()
+        # Collect disprovers
+        num_disprovers = random.randint(0, min(3, len(self.players)))
+        disprovers = []
+        if num_disprovers:
+            disprovers = random.sample(list(self.players.keys()), num_disprovers)
+        self.game.enter_other_players_guess(guesser, guessed_suspect, guessed_weapon, guessed_room, disprovers)
+
+    def is_game_finished(self):
+        return False
+
+
+def playRandomGame(seed = None):
     if not seed:
         seed = random.randrange(sys.maxsize)
     randomGame = RandomGame(seed)
@@ -163,6 +200,30 @@ def main(seed = None):
                 break
     return solution_correct
 
+def playRandomInvalidGame(seed = None):
+    if not seed:
+        seed = random.randrange(sys.maxsize)
+    randomGame = RandomInvalidGame(seed)
+    # Get players and choose an arbitrary turn order to go in
+    players = list(randomGame.players.keys()) + ["Me"]
+    random.shuffle(players)
+    turn_limit = 20
+    for x in range(0, turn_limit):
+        for player in players:
+            if player == "Me":
+                randomGame.my_turn()
+            else:
+                randomGame.other_player_turn(player)
+    return True
+
+def main(validGame = True, seed = None):
+    if validGame:
+        game_succeeded = playRandomGame(seed)
+    else:
+        game_succeeded = playRandomInvalidGame(seed)
+    return game_succeeded
+
 if __name__ == '__main__':
     seed = random.randrange(sys.maxsize)
-    main(seed)
+    valid_game = True
+    main(valid_game, seed)
