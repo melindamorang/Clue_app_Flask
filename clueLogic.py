@@ -364,7 +364,7 @@ class game():
                 guess.remove(card_to_remove)
                 disprovers.remove(disprover)
                 # Recursively call this function to try to eliminate some more.
-                self.narrow_down_guess(guess, disprovers)
+                return self.narrow_down_guess(guess, disprovers)
 
         # We've run out of stuff to learn. Return remaining unknown guess items and disprovers
         return guess, disprovers
