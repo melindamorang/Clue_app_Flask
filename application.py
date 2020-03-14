@@ -64,7 +64,7 @@ def enterCards():
 
 @app.route('/snoop')
 def snoop():
-    other_players = [player for player in session["game"].players if player != "Me"]
+    other_players = sorted([player for player in session["game"].players if player != "Me"])
     return render_template(
         "snoop.html",
         players=other_players,
@@ -85,7 +85,7 @@ def enterSnoop():
 
 @app.route('/guess')
 def guess():
-    other_players = [player for player in session["game"].players if player != "Me"]
+    other_players = sorted([player for player in session["game"].players if player != "Me"])
     return render_template(
         "guess.html",
         suspects=clueLogic.cards["suspects"],
@@ -118,7 +118,7 @@ def enterGuess():
 
 @app.route('/otherPlayerGuess')
 def otherPlayerGuess():
-    other_players = [player for player in session["game"].players if player != "Me"]
+    other_players = sorted([player for player in session["game"].players if player != "Me"])
     return render_template(
         "OtherPlayerGuess.html",
         players=other_players,
