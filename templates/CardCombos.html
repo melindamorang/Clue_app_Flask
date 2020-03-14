@@ -1,5 +1,13 @@
 {% block combos %}
 
+Room<br />
+<select name="guessed_room" required class="guess" id="guessedRoom" required onchange="showHideDisprovers(this);">
+    <option value="" selected disabled hidden>Select one...</option>
+    {% for room in rooms %}
+    <option value="{{ room }}">{{ room }}</option>
+    {% endfor %}
+</select><br />
+
 Suspect<br />
 <select name="guessed_suspect" required class="guess" id="guessedSuspect" required onchange="showHideDisprovers(this);">
     <option value="" selected disabled hidden>Select one...</option>
@@ -13,14 +21,6 @@ Weapon<br />
     <option value="" selected disabled hidden>Select one...</option>
     {% for weapon in weapons %}
     <option value="{{ weapon }}">{{ weapon }}</option>
-    {% endfor %}
-</select><br />
-
-Room<br />
-<select name="guessed_room" required class="guess" id="guessedRoom" required onchange="showHideDisprovers(this);">
-    <option value="" selected disabled hidden>Select one...</option>
-    {% for room in rooms %}
-    <option value="{{ room }}">{{ room }}</option>
     {% endfor %}
 </select><br />
 
