@@ -1,40 +1,40 @@
 # Master list of cards in the game
 cards = {
     "suspects": [
-        "Col. Mustard",
-        "Prof. Plum",
-        "Mr. Green",
-        "Mrs. Peacock",
-        "Miss Scarlet",
-        "Mrs. White",
-        "Mme Rose",
-        "Sgt. Gray",
         "M. Brunette",
-        "Miss Peach"
+        "Sgt. Gray",
+        "Mr. Green",
+        "Col. Mustard",
+        "Miss Peach",
+        "Mrs. Peacock",
+        "Prof. Plum",
+        "Mme Rose",
+        "Miss Scarlet",
+        "Mrs. White"
     ],
     "weapons": [
-        "Knife",
         "Candlestick",
+        "Horseshoe",
+        "Knife",
+        "Lead Pipe",
+        "Poison",
         "Revolver",
         "Rope",
-        "Lead Pipe",
-        "Wrench",
-        "Poison",
-        "Horseshoe"
+        "Wrench"
     ],
     "rooms": [
-        "Courtyard",
-        "Gazebo",
-        "Drawing Room",
-        "Dining Room",
-        "Kitchen",
-        "Carriage House",
-        "Trophy Room",
-        "Conservatory",
-        "Studio",
         "Billiard Room",
+        "Carriage House",
+        "Conservatory",
+        "Courtyard",
+        "Dining Room",
+        "Drawing Room",
+        "Fountain",
+        "Gazebo",
+        "Kitchen",
         "Library",
-        "Fountain"
+        "Studio",
+        "Trophy Room"  
     ]
 }
 
